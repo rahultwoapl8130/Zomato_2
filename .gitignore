@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+restaurant-ai/node_modules/
+
+# Python environments
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Next.js
+.next/
+out/
+build/
+
+# Environment variables
+.env
+.env.local
