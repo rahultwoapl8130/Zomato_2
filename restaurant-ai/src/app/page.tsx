@@ -11,12 +11,12 @@ export default function Home() {
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-8 text-center">
               <div className="space-y-4 max-w-3xl">
-                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-primary/50 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-gray-800 to-gray-500 animate-in fade-in slide-in-from-bottom-4 duration-700">
                   Discover Restaurants.<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-rose-400 drop-shadow-[0_0_20px_rgba(225,29,72,0.3)]">Understand Reviews.</span><br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-rose-500 drop-shadow-sm">Understand Reviews.</span><br />
                   Predict Sentiment.
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl/relaxed lg:text-lg/relaxed xl:text-xl/relaxed animate-in fade-in slide-in-from-bottom-5 duration-1000">
+                <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-lg/relaxed xl:text-xl/relaxed animate-in fade-in slide-in-from-bottom-5 duration-1000">
                   RestaurantAI combines restaurant information, customer reviews, and machine learning intelligence to provide unparalleled dining analytics.
                 </p>
               </div>
