@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Search, MapPin, LineChart, TrendingUp, Star } from "lucide-react";
+import HeroSearch from "@/components/HeroSearch";
 
 export default function Home() {
   return (
@@ -10,33 +11,18 @@ export default function Home() {
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-8 text-center">
               <div className="space-y-4 max-w-3xl">
-                <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-primary/50 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-in fade-in slide-in-from-bottom-4 duration-700">
                   Discover Restaurants.<br />
-                  Understand Reviews.<br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-rose-400 drop-shadow-[0_0_20px_rgba(225,29,72,0.3)]">Understand Reviews.</span><br />
                   Predict Sentiment.
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl/relaxed lg:text-lg/relaxed xl:text-xl/relaxed animate-in fade-in slide-in-from-bottom-5 duration-1000">
                   RestaurantAI combines restaurant information, customer reviews, and machine learning intelligence to provide unparalleled dining analytics.
                 </p>
               </div>
               
-              <div className="w-full max-w-sm space-y-2">
-                <div className="flex rounded-full bg-white/5 p-1 border border-white/10 shadow-lg backdrop-blur-md">
-                  <div className="flex items-center px-4 border-r border-white/10">
-                    <MapPin className="h-5 w-5 text-gray-400" />
-                    <span className="ml-2 text-sm text-gray-400">Hyderabad</span>
-                  </div>
-                  <input 
-                    className="flex-1 bg-transparent px-4 text-sm text-white focus:outline-none placeholder:text-gray-500" 
-                    placeholder="Search for restaurant, cuisine or a dish..." 
-                    type="text" 
-                  />
-                  <Link href="/restaurants">
-                    <button className="rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
-                      Search
-                    </button>
-                  </Link>
-                </div>
+              <div className="w-full max-w-sm space-y-2 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
+                <HeroSearch />
               </div>
             </div>
           </div>
