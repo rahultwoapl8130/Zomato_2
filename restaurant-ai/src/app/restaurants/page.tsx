@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { Search, SlidersHorizontal, ArrowUpDown, Check } from "lucide-react";
-import { getRestaurants } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { Search, SlidersHorizontal, ArrowUpDown, Check, Loader2 } from "lucide-react";
 import { RestaurantCard } from "@/components/RestaurantCard";
 
 export default function RestaurantsPage() {
-  const allRestaurants = getRestaurants();
+  const [allRestaurants, setAllRestaurants] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("rating-desc");
   const [selectedCuisine, setSelectedCuisine] = useState<string>("All");
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/restaurants');
+        const data = await res.json();
+        setAllRestaurants(data);
+      } catch (err) {
+        console.error("Failed to fetch restaurants", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   // Get unique cuisines
   const allCuisines = ["All", ...Array.from(new Set(allRestaurants.flatMap(r => r.cuisines)))].sort();
@@ -38,6 +53,13 @@ export default function RestaurantsPage() {
         default: return 0;
       }
     });
+
+  if (isLoading) {
+    return <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <span className="ml-2 text-lg font-medium">Loading 100+ Real Restaurants...</span>
+    </div>;
+  }
 
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl flex flex-col md:flex-row gap-6">
@@ -74,7 +96,7 @@ export default function RestaurantsPage() {
 
           <div>
             <h3 className="font-semibold mb-3">Cuisines</h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 max-h-[400px] overflow-y-auto pr-2 pb-2">
               {allCuisines.map(cuisine => (
                 <button 
                   key={cuisine}
@@ -123,7 +145,7 @@ export default function RestaurantsPage() {
         </div>
 
         <div className="mb-4 text-sm text-muted-foreground">
-          Showing {filteredRestaurants.length} restaurants
+          Showing {filteredRestaurants.length} restaurants from Zomato Data
         </div>
 
         {filteredRestaurants.length > 0 ? (

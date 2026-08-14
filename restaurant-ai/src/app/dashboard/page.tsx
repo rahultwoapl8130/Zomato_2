@@ -1,28 +1,30 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { getSentimentTrends, getTopCuisines, restaurants, reviews } from '@/lib/mock-data';
-import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus } from 'lucide-react';
+import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DashboardPage() {
-  const sentimentData = getSentimentTrends();
-  const cuisineData = getTopCuisines();
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboard');
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
   
   const COLORS = ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#ffe4e6'];
-
-  // Calculate top 5 and bottom 5 based on AI Sentiment Score
-  const sortedRestaurants = [...restaurants].sort((a, b) => b.sentimentScore - a.sentimentScore);
-  const top5 = sortedRestaurants.slice(0, 5);
-  const bottom5 = [...sortedRestaurants].reverse().slice(0, 5);
-
-  const getSentimentIcon = (sentiment: string) => {
-    switch(sentiment) {
-      case 'Positive': return <TrendingUp className="w-4 h-4 text-green-500" />;
-      case 'Negative': return <TrendingDown className="w-4 h-4 text-red-500" />;
-      default: return <Minus className="w-4 h-4 text-yellow-500" />;
-    }
-  };
 
   const getSentimentColor = (sentiment: string) => {
     switch(sentiment) {
@@ -32,11 +34,20 @@ export default function DashboardPage() {
     }
   };
 
+  if (isLoading) {
+    return <div className="min-h-[80vh] flex flex-col items-center justify-center">
+      <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+      <span className="text-xl font-medium">Analyzing Data for Dashboard...</span>
+    </div>;
+  }
+
+  const { top5, bottom5, reviews, sentimentData, cuisineData } = data || {};
+
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Advanced Analytics</h1>
-        <p className="text-muted-foreground">Monitor real-time ML model performance, live feeds, and sentiment leaderboards.</p>
+        <p className="text-muted-foreground">Monitor real-time ML model performance, live feeds, and sentiment leaderboards based on Real Data.</p>
       </div>
 
       {/* Stats Cards */}
@@ -46,7 +57,7 @@ export default function DashboardPage() {
             <h3 className="tracking-tight text-sm font-medium">Total Reviews Analyzed</h3>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold">45,231</div>
+          <div className="text-2xl font-bold">26,767</div>
           <p className="text-xs text-muted-foreground">+20.1% from last month</p>
         </div>
         <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
@@ -62,8 +73,8 @@ export default function DashboardPage() {
             <h3 className="tracking-tight text-sm font-medium">Active Restaurants</h3>
             <Users className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold">8,405</div>
-          <p className="text-xs text-muted-foreground">+180 this week</p>
+          <div className="text-2xl font-bold">105</div>
+          <p className="text-xs text-muted-foreground">Real Dataset Loaded</p>
         </div>
         <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
           <div className="flex items-center justify-between space-y-0 pb-2">
@@ -83,7 +94,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Based on highest AI Sentiment Score</p>
           </div>
           <div className="p-0">
-            {top5.map((r, i) => (
+            {top5?.map((r: any, i: number) => (
               <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
@@ -107,7 +118,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Based on lowest AI Sentiment Score</p>
           </div>
           <div className="p-0">
-            {bottom5.map((r, i) => (
+            {bottom5?.map((r: any, i: number) => (
               <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
@@ -134,7 +145,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Real-time ML analysis stream</p>
           </div>
           <div className="p-0 overflow-y-auto flex-1">
-            {reviews.map(review => (
+            {reviews?.map((review: any) => (
               <div key={review.id} className="p-4 border-b border-border/50 last:border-0 hover:bg-muted/30">
                 <div className="flex justify-between items-start mb-2">
                   <div className="font-medium text-sm">{review.customerName}</div>
@@ -225,7 +236,7 @@ export default function DashboardPage() {
                   paddingAngle={2}
                   dataKey="value"
                 >
-                  {cuisineData.map((entry, index) => (
+                  {cuisineData?.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
