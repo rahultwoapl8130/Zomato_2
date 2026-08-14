@@ -16,7 +16,7 @@ export default function RestaurantsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('/api/restaurants');
+        const res = await fetch('https://zomato-3-hi4f.onrender.com/api/restaurants');
         const data = await res.json();
         setAllRestaurants(data);
       } catch (err) {

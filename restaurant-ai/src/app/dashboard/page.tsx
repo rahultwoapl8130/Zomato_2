@@ -12,7 +12,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('/api/dashboard');
+        const res = await fetch('https://zomato-3-hi4f.onrender.com/api/dashboard');
         const json = await res.json();
         setData(json);
       } catch (err) {

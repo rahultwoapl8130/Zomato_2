@@ -12,7 +12,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`/api/restaurants/${id}`);
+        const res = await fetch(`https://zomato-3-hi4f.onrender.com/api/restaurants/${id}`);
         const data = await res.json();
         if (res.ok) {
           setRestaurant(data);
