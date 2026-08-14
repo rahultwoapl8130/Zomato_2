@@ -1,8 +1,9 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { getSentimentTrends, getTopCuisines } from '@/lib/mock-data';
-import { Activity, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { getSentimentTrends, getTopCuisines, restaurants, reviews } from '@/lib/mock-data';
+import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DashboardPage() {
   const sentimentData = getSentimentTrends();
@@ -10,11 +11,32 @@ export default function DashboardPage() {
   
   const COLORS = ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#ffe4e6'];
 
+  // Calculate top 5 and bottom 5 based on AI Sentiment Score
+  const sortedRestaurants = [...restaurants].sort((a, b) => b.sentimentScore - a.sentimentScore);
+  const top5 = sortedRestaurants.slice(0, 5);
+  const bottom5 = [...sortedRestaurants].reverse().slice(0, 5);
+
+  const getSentimentIcon = (sentiment: string) => {
+    switch(sentiment) {
+      case 'Positive': return <TrendingUp className="w-4 h-4 text-green-500" />;
+      case 'Negative': return <TrendingDown className="w-4 h-4 text-red-500" />;
+      default: return <Minus className="w-4 h-4 text-yellow-500" />;
+    }
+  };
+
+  const getSentimentColor = (sentiment: string) => {
+    switch(sentiment) {
+      case 'Positive': return "bg-green-500/10 text-green-500 border-green-500/20";
+      case 'Negative': return "bg-red-500/10 text-red-500 border-red-500/20";
+      default: return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
+    }
+  };
+
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Model Analytics</h1>
-        <p className="text-muted-foreground">Monitor your Zomato ML model performance and overall restaurant metrics.</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Advanced Analytics</h1>
+        <p className="text-muted-foreground">Monitor real-time ML model performance, live feeds, and sentiment leaderboards.</p>
       </div>
 
       {/* Stats Cards */}
@@ -50,6 +72,112 @@ export default function DashboardPage() {
           </div>
           <div className="text-2xl font-bold">₹840</div>
           <p className="text-xs text-muted-foreground">-₹12 from last month</p>
+        </div>
+      </div>
+
+      {/* Leaderboard Section */}
+      <div className="grid gap-6 md:grid-cols-2 mb-8">
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
+          <div className="p-5 border-b border-border/50 bg-green-500/5">
+            <h3 className="font-semibold flex items-center gap-2"><TrendingUp className="w-4 h-4 text-green-500"/> Top 5 Restaurants</h3>
+            <p className="text-xs text-muted-foreground mt-1">Based on highest AI Sentiment Score</p>
+          </div>
+          <div className="p-0">
+            {top5.map((r, i) => (
+              <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
+                  <div>
+                    <div className="font-medium">{r.name}</div>
+                    <div className="text-xs text-muted-foreground">{r.location}</div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="text-green-500 font-bold">{r.sentimentScore}%</div>
+                  <div className="text-xs flex items-center text-muted-foreground">{r.rating} <Star className="w-3 h-3 ml-0.5 fill-current"/></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
+          <div className="p-5 border-b border-border/50 bg-red-500/5">
+            <h3 className="font-semibold flex items-center gap-2"><TrendingDown className="w-4 h-4 text-red-500"/> Bottom 5 Restaurants</h3>
+            <p className="text-xs text-muted-foreground mt-1">Based on lowest AI Sentiment Score</p>
+          </div>
+          <div className="p-0">
+            {bottom5.map((r, i) => (
+              <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
+                  <div>
+                    <div className="font-medium">{r.name}</div>
+                    <div className="text-xs text-muted-foreground">{r.location}</div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="text-red-500 font-bold">{r.sentimentScore}%</div>
+                  <div className="text-xs flex items-center text-muted-foreground">{r.rating} <Star className="w-3 h-3 ml-0.5 fill-current"/></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
+        {/* Live Feed */}
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col md:col-span-1 h-[400px]">
+          <div className="p-5 border-b border-border/50">
+            <h3 className="font-semibold flex items-center gap-2"><Activity className="w-4 h-4 text-primary"/> Live Review Feed</h3>
+            <p className="text-xs text-muted-foreground mt-1">Real-time ML analysis stream</p>
+          </div>
+          <div className="p-0 overflow-y-auto flex-1">
+            {reviews.map(review => (
+              <div key={review.id} className="p-4 border-b border-border/50 last:border-0 hover:bg-muted/30">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-medium text-sm">{review.customerName}</div>
+                  <div className={`px-2 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1 ${getSentimentColor(review.sentiment)}`}>
+                    {review.sentiment}
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-2">"{review.text}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Keywords */}
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col md:col-span-2 h-[400px]">
+          <div className="p-5 border-b border-border/50">
+            <h3 className="font-semibold">Top Keywords Extracted (TF-IDF)</h3>
+            <p className="text-xs text-muted-foreground mt-1">Most frequent words driving the ML prediction</p>
+          </div>
+          <div className="p-6 flex-1 flex flex-col md:flex-row gap-6">
+            <div className="flex-1 rounded-xl bg-green-500/5 border border-green-500/20 p-5 flex flex-col items-center justify-center">
+              <h4 className="text-green-500 font-semibold mb-4 text-sm uppercase tracking-wider">Positive Drivers</h4>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-lg font-bold">tasty</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">ambience</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">fast</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xl font-bold">perfect</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">hygienic</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">authentic</span>
+              </div>
+            </div>
+            <div className="flex-1 rounded-xl bg-red-500/5 border border-red-500/20 p-5 flex flex-col items-center justify-center">
+              <h4 className="text-red-500 font-semibold mb-4 text-sm uppercase tracking-wider">Negative Drivers</h4>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-lg font-bold">cold</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xl font-bold">delayed</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">stale</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">overpriced</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">rude</span>
+                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xs">burnt</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
