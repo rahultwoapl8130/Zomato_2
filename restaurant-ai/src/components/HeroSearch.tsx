@@ -35,7 +35,7 @@ export default function HeroSearch() {
 
     const term = searchTerm.toLowerCase();
     const results = allRestaurants.filter((r) =>
-      r.Restaurant_Name && r.Restaurant_Name.toLowerCase().startsWith(term)
+      r.name && r.name.toLowerCase().startsWith(term)
     ).slice(0, 8); // limit to top 8 suggestions
 
     setFilteredResults(results);
@@ -93,15 +93,15 @@ export default function HeroSearch() {
                     <div className="flex flex-col flex-1">
                       <span className="text-gray-800 font-medium text-sm">
                         {/* Highlight the matching part */}
-                        <span className="text-primary font-bold">{restaurant.Restaurant_Name.substring(0, searchTerm.length)}</span>
-                        {restaurant.Restaurant_Name.substring(searchTerm.length)}
+                        <span className="text-primary font-bold">{restaurant.name.substring(0, searchTerm.length)}</span>
+                        {restaurant.name.substring(searchTerm.length)}
                       </span>
                       <span className="text-xs text-gray-500 mt-0.5 truncate max-w-[250px]">
-                        {restaurant.Cuisines}
+                        {restaurant.cuisines?.join(", ") || restaurant.cuisines}
                       </span>
                     </div>
                     <div className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded-md">
-                      ★ {restaurant.Aggregate_rating}
+                      ★ {restaurant.rating}
                     </div>
                   </div>
                 </Link>

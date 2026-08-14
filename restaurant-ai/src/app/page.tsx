@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-dot-white/[0.2] relative flex items-center justify-center">
-          <div className="absolute inset-0 bg-background/80 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+        <section className="w-full py-20 md:py-28 lg:py-36 bg-cover bg-center bg-no-repeat relative flex items-center justify-center" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]" />
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-8 text-center">
               <div className="space-y-4 max-w-3xl">

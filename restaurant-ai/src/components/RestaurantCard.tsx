@@ -13,7 +13,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <div className="aspect-[4/3] w-full overflow-hidden relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
-            src={restaurant.imageUrl} 
+            src={restaurant.image || restaurant.imageUrl} 
             alt={restaurant.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
