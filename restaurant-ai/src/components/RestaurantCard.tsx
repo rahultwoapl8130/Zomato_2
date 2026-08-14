@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { Star, MapPin, TrendingUp } from "lucide-react";
+import { Star, MapPin, TrendingUp, Heart } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import type { Restaurant } from "@/lib/mock-data";
 
 interface RestaurantCardProps {
@@ -7,9 +10,13 @@ interface RestaurantCardProps {
 }
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
+  const { favourites, toggleFavourite, user } = useAuth();
+  const isFav = favourites.includes(restaurant.id);
+
   return (
-    <Link href={`/restaurants/${restaurant.id}`}>
-      <div className="group rounded-2xl border border-border/50 bg-card text-card-foreground shadow-sm hover:shadow-md hover:border-primary/50 transition-all overflow-hidden h-full flex flex-col">
+    <div className="relative group">
+      <Link href={`/restaurants/${restaurant.id}`}>
+        <div className="rounded-2xl border border-border/50 bg-card text-card-foreground shadow-sm hover:shadow-md hover:border-primary/50 transition-all overflow-hidden h-full flex flex-col">
         <div className="aspect-[4/3] w-full overflow-hidden relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
@@ -42,7 +49,22 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <span className="ml-auto font-medium text-foreground">₹{restaurant.costForTwo} for two</span>
           </div>
         </div>
-      </div>
-    </Link>
+        </div>
+      </Link>
+      
+      {/* Favourite Button (Absolute positioned on top of the card) */}
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavourite(restaurant.id);
+        }}
+        className={`absolute top-3 left-3 z-10 p-2 rounded-full backdrop-blur-sm transition-all ${
+          isFav ? 'bg-primary text-primary-foreground shadow-md' : 'bg-background/80 text-muted-foreground hover:bg-background shadow-sm hover:text-primary'
+        }`}
+      >
+        <Heart className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
+      </button>
+    </div>
   );
 }

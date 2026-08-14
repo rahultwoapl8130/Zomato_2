@@ -2,12 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { use } from "react";
-import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2 } from "lucide-react";
+import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [restaurant, setRestaurant] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const { user, favourites, toggleFavourite } = useAuth();
+  
+  const isFav = favourites.includes(id);
 
   useEffect(() => {
     async function fetchData() {
@@ -64,14 +69,44 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
           </div>
+          
+          <button 
+            onClick={() => toggleFavourite(id)}
+            className={`absolute top-6 right-6 z-10 p-3 rounded-full backdrop-blur-md transition-all ${
+              isFav ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-background/60 text-white hover:bg-background/90 shadow-md hover:text-primary'
+            }`}
+          >
+            <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
+          </button>
         </div>
       </div>
 
-      <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container px-4 md:px-6 py-6 mx-auto max-w-7xl">
+        {/* Tabs Navigation */}
+        <div className="flex space-x-6 border-b border-border/50 mb-8 overflow-x-auto pb-1">
+          {['overview', 'menu', 'reviews', 'map'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`pb-3 font-medium text-sm transition-colors whitespace-nowrap ${
+                activeTab === tab 
+                  ? 'border-b-2 border-primary text-primary' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
         
-        {/* Main Info */}
-        <div className="lg:col-span-2 space-y-8">
-          <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Main Info */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {activeTab === 'overview' && (
+              <div className="space-y-8">
+                <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -105,51 +140,95 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
           </section>
+              </div>
+            )}
 
-          {/* AI Analyzed Reviews section */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Info className="w-6 h-6 text-primary" /> AI Analyzed Reviews
-            </h2>
-            <div className="mb-4 text-sm text-muted-foreground">
-              Showing {restaurant.reviews?.length || 0} real reviews from Zomato dataset.
-            </div>
-            
-            <div className="space-y-4">
-              {restaurant.reviews && restaurant.reviews.length > 0 ? (
-                restaurant.reviews.map((review: any) => (
-                  <div key={review.id} className="bg-card border border-border/50 rounded-xl p-5 shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <div className="font-bold">{review.customerName}</div>
-                        <div className="text-xs text-muted-foreground">{review.date}</div>
+            {activeTab === 'menu' && (
+              <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <MenuIcon className="w-6 h-6 text-primary" /> Menu
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4, 5, 6].map((item) => (
+                    <div key={item} className="flex gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
+                      <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                        <img src={`https://source.unsplash.com/100x100/?food,dish,${item}`} alt="Dish" className="w-full h-full object-cover" />
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-0.5 text-sm font-bold bg-primary/10 text-primary px-2 py-0.5 rounded">
-                          {review.rating} <Star className="w-3 h-3 fill-current" />
-                        </div>
-                        <div className={`px-2 py-0.5 rounded text-xs font-bold border ${
-                          review.sentiment === 'Positive' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
-                          review.sentiment === 'Negative' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
-                          'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
-                        }`}>
-                          {review.sentiment}
-                        </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-sm">Delicious {restaurant.cuisines?.[0]} Dish {item}</h4>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">Authentic preparation with fresh ingredients and secret spices.</p>
+                        <div className="font-semibold text-primary mt-2">₹{Math.floor(Math.random() * 300) + 150}</div>
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      "{review.text}"
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 text-center border border-border/50 rounded-xl bg-card/50">
-                  <p className="text-muted-foreground">No reviews available for this restaurant yet.</p>
+                  ))}
                 </div>
-              )}
-            </div>
-          </section>
-        </div>
+              </section>
+            )}
+
+            {activeTab === 'map' && (
+              <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm h-[500px] flex flex-col">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <Navigation className="w-6 h-6 text-primary" /> Location
+                </h2>
+                <div className="flex-1 bg-muted rounded-xl relative overflow-hidden">
+                  {/* Fake map representation */}
+                  <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop" alt="Map" className="w-full h-full object-cover opacity-70" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-background/90 p-4 rounded-xl shadow-lg border border-border/50 max-w-xs text-center backdrop-blur-sm">
+                      <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
+                      <h3 className="font-bold">{restaurant.name}</h3>
+                      <p className="text-xs text-muted-foreground mt-1">{restaurant.location}</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {activeTab === 'reviews' && (
+              <section>
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <Info className="w-6 h-6 text-primary" /> AI Analyzed Reviews
+                </h2>
+                <div className="mb-4 text-sm text-muted-foreground">
+                  Showing {restaurant.reviews?.length || 0} real reviews from Zomato dataset.
+                </div>
+                
+                <div className="space-y-4">
+                  {restaurant.reviews && restaurant.reviews.length > 0 ? (
+                    restaurant.reviews.map((review: any) => (
+                      <div key={review.id} className="bg-card border border-border/50 rounded-xl p-5 shadow-sm">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <div className="font-bold">{review.customerName}</div>
+                            <div className="text-xs text-muted-foreground">{review.date}</div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-0.5 text-sm font-bold bg-primary/10 text-primary px-2 py-0.5 rounded">
+                              {review.rating} <Star className="w-3 h-3 fill-current" />
+                            </div>
+                            <div className={`px-2 py-0.5 rounded text-xs font-bold border ${
+                              review.sentiment === 'Positive' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
+                              review.sentiment === 'Negative' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
+                              'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                            }`}>
+                              {review.sentiment}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          "{review.text}"
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-8 text-center border border-border/50 rounded-xl bg-card/50">
+                      <p className="text-muted-foreground">No reviews available for this restaurant yet.</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+          </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
