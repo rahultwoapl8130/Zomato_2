@@ -14,6 +14,7 @@ export function Navbar() {
     { name: "Explore Restaurants", href: "/restaurants" },
     { name: "Reviews & Predictor", href: "/predict" },
     { name: "AI Dashboard", href: "/dashboard" },
+    { name: "About", href: "/about" },
   ];
 
   return (
