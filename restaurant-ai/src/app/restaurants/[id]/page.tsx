@@ -152,15 +152,15 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                   <MenuIcon className="w-6 h-6 text-primary" /> Menu
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
-                    <div key={item} className="flex gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
+                  {restaurant.menu?.map((item: any) => (
+                    <div key={item.id} className="flex gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
                       <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                        <img src={`https://source.unsplash.com/100x100/?food,dish,${item}`} alt="Dish" className="w-full h-full object-cover" />
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-bold text-sm">Delicious {restaurant.cuisines?.[0]} Dish {item}</h4>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">Authentic preparation with fresh ingredients and secret spices.</p>
-                        <div className="font-semibold text-primary mt-2">₹{Math.floor(Math.random() * 300) + 150}</div>
+                        <h4 className="font-bold text-sm">{item.name}</h4>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
+                        <div className="font-semibold text-primary mt-2">₹{item.price}</div>
                       </div>
                     </div>
                   ))}
