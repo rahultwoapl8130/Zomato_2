@@ -258,5 +258,6 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
 
       </div>
     </div>
+    </div>
   );
 }

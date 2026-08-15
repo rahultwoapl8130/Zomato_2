@@ -12,6 +12,7 @@ export interface Restaurant {
   sentimentScore: number;
   reviewCount: number;
   imageUrl: string;
+  image?: string;
 }
 
 export interface Review {
