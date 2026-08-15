@@ -1,20 +1,42 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2, Target, Crosshair, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
-import { RestaurantAPI, DashboardData } from '@/lib/api/restaurants';
+import { RestaurantAPI } from '@/lib/api/restaurants';
 
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const json = await RestaurantAPI.getDashboard();
-        setData(json);
+        const [
+          modelInfo,
+          overview,
+          sentiment,
+          cuisines,
+          keywords,
+          feed
+        ] = await Promise.all([
+          RestaurantAPI.getModelInfo(),
+          RestaurantAPI.getAnalyticsOverview(),
+          RestaurantAPI.getAnalyticsSentiment(),
+          RestaurantAPI.getAnalyticsCuisines(),
+          RestaurantAPI.getAnalyticsKeywords(),
+          RestaurantAPI.getDashboardFeed()
+        ]);
+
+        setData({
+          modelInfo,
+          overview,
+          sentiment,
+          cuisines,
+          keywords,
+          feed
+        });
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
       } finally {
@@ -41,7 +63,9 @@ export default function DashboardPage() {
     </div>;
   }
 
-  const { top5, bottom5, reviews, sentimentData, cuisineData } = data || {};
+  if (!data) return <div className="p-8 text-center">Failed to load analytics data.</div>;
+
+  const { modelInfo, overview, sentiment, cuisines, keywords, feed } = data;
 
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl">
@@ -57,23 +81,39 @@ export default function DashboardPage() {
             <h3 className="tracking-tight text-sm font-medium">Total Reviews Analyzed</h3>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold">26,767</div>
-          <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+          <div className="text-2xl font-bold">{overview?.totalReviewsAnalyzed?.toLocaleString() || 0}</div>
+          <p className="text-xs text-muted-foreground">From Kaggle Zomato Dataset</p>
         </div>
-        <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
+        
+        {/* Updated Model Diagnostics Card */}
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between space-y-0 pb-2">
-            <h3 className="tracking-tight text-sm font-medium">Model Accuracy</h3>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <h3 className="tracking-tight text-sm font-medium text-primary">Model Accuracy</h3>
+            <Target className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl font-bold">94.2%</div>
-          <p className="text-xs text-muted-foreground">+2.1% improvement</p>
+          <div className="text-3xl font-extrabold text-primary">{modelInfo?.accuracy}%</div>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="bg-background rounded-md p-2 text-center border border-border/50 shadow-sm">
+              <div className="text-[10px] text-muted-foreground uppercase font-bold">Precision</div>
+              <div className="text-sm font-bold">{modelInfo?.precision}</div>
+            </div>
+            <div className="bg-background rounded-md p-2 text-center border border-border/50 shadow-sm">
+              <div className="text-[10px] text-muted-foreground uppercase font-bold">Recall</div>
+              <div className="text-sm font-bold">{modelInfo?.recall}</div>
+            </div>
+            <div className="bg-background rounded-md p-2 text-center border border-border/50 shadow-sm">
+              <div className="text-[10px] text-muted-foreground uppercase font-bold">F1-Score</div>
+              <div className="text-sm font-bold">{modelInfo?.f1Score}</div>
+            </div>
+          </div>
         </div>
+
         <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
           <div className="flex items-center justify-between space-y-0 pb-2">
             <h3 className="tracking-tight text-sm font-medium">Active Restaurants</h3>
             <Users className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold">105</div>
+          <div className="text-2xl font-bold">{overview?.activeRestaurants?.toLocaleString() || 0}</div>
           <p className="text-xs text-muted-foreground">Real Dataset Loaded</p>
         </div>
         <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
@@ -81,8 +121,8 @@ export default function DashboardPage() {
             <h3 className="tracking-tight text-sm font-medium">Avg Cost for Two</h3>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold">₹840</div>
-          <p className="text-xs text-muted-foreground">-₹12 from last month</p>
+          <div className="text-2xl font-bold">₹{overview?.avgCostForTwo || 0}</div>
+          <p className="text-xs text-muted-foreground">Across all listed restaurants</p>
         </div>
       </div>
 
@@ -94,7 +134,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Based on highest AI Sentiment Score</p>
           </div>
           <div className="p-0">
-            {top5?.map((r: any, i: number) => (
+            {feed?.top5?.map((r: any, i: number) => (
               <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
@@ -118,7 +158,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Based on lowest AI Sentiment Score</p>
           </div>
           <div className="p-0">
-            {bottom5?.map((r: any, i: number) => (
+            {feed?.bottom5?.map((r: any, i: number) => (
               <Link href={`/restaurants/${r.id}`} key={r.id} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/50 transition-colors last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="w-6 font-bold text-muted-foreground">#{i+1}</div>
@@ -145,7 +185,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Real-time ML analysis stream</p>
           </div>
           <div className="p-0 overflow-y-auto flex-1">
-            {reviews?.map((review: any) => (
+            {feed?.reviews?.map((review: any) => (
               <div key={review.id} className="p-4 border-b border-border/50 last:border-0 hover:bg-muted/30">
                 <div className="flex justify-between items-start mb-2">
                   <div className="font-medium text-sm">{review.customerName}</div>
@@ -153,55 +193,61 @@ export default function DashboardPage() {
                     {review.sentiment}
                   </div>
                 </div>
+                <p className="text-xs text-muted-foreground mb-1">{review.restaurant}</p>
                 <p className="text-xs text-muted-foreground line-clamp-2">"{review.text}"</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Keywords */}
+        {/* TF-IDF Keywords Bar Chart */}
         <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col md:col-span-2 h-[400px]">
-          <div className="p-5 border-b border-border/50">
-            <h3 className="font-semibold">Top Keywords Extracted (TF-IDF)</h3>
-            <p className="text-xs text-muted-foreground mt-1">Most frequent words driving the ML prediction</p>
+          <div className="p-5 border-b border-border/50 flex justify-between items-center">
+            <div>
+              <h3 className="font-semibold">Top Keywords Extracted (TF-IDF)</h3>
+              <p className="text-xs text-muted-foreground mt-1">Machine Learning Feature Importance</p>
+            </div>
+            <HelpCircle className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="p-6 flex-1 flex flex-col md:flex-row gap-6">
-            <div className="flex-1 rounded-xl bg-green-500/5 border border-green-500/20 p-5 flex flex-col items-center justify-center">
-              <h4 className="text-green-500 font-semibold mb-4 text-sm uppercase tracking-wider">Positive Drivers</h4>
-              <div className="flex flex-wrap gap-2 justify-center">
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-lg font-bold">tasty</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">ambience</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">fast</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xl font-bold">perfect</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">hygienic</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">authentic</span>
-              </div>
+            <div className="flex-1 min-h-[250px]">
+              <h4 className="text-green-500 font-semibold mb-2 text-sm text-center">Positive Drivers</h4>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={keywords?.positive} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#333" />
+                  <XAxis type="number" domain={[0, 1]} hide />
+                  <YAxis dataKey="word" type="category" axisLine={false} tickLine={false} fontSize={12} stroke="#888" width={80} />
+                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} />
+                  <Bar dataKey="weight" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-            <div className="flex-1 rounded-xl bg-red-500/5 border border-red-500/20 p-5 flex flex-col items-center justify-center">
-              <h4 className="text-red-500 font-semibold mb-4 text-sm uppercase tracking-wider">Negative Drivers</h4>
-              <div className="flex flex-wrap gap-2 justify-center">
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-lg font-bold">cold</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xl font-bold">delayed</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">stale</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-base">overpriced</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-sm">rude</span>
-                <span className="px-3 py-1 bg-background rounded-full border shadow-sm text-xs">burnt</span>
-              </div>
+            <div className="flex-1 min-h-[250px]">
+              <h4 className="text-red-500 font-semibold mb-2 text-sm text-center">Negative Drivers</h4>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={keywords?.negative} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#333" />
+                  <XAxis type="number" domain={[0, 1]} hide />
+                  <YAxis dataKey="word" type="category" axisLine={false} tickLine={false} fontSize={12} stroke="#888" width={80} />
+                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} />
+                  <Bar dataKey="weight" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mb-8">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-8 mb-8">
         {/* Main Chart */}
-        <div className="rounded-xl border border-border/50 bg-card shadow-sm lg:col-span-4 overflow-hidden flex flex-col">
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm lg:col-span-3 overflow-hidden flex flex-col">
           <div className="p-6 border-b border-border/50">
-            <h3 className="font-semibold leading-none tracking-tight">Sentiment Trend Analysis</h3>
-            <p className="text-sm text-muted-foreground mt-1.5">Monthly breakdown of Positive, Negative and Neutral predictions.</p>
+            <h3 className="font-semibold leading-none tracking-tight">Sentiment Trend</h3>
+            <p className="text-sm text-muted-foreground mt-1.5">Monthly breakdown predictions.</p>
           </div>
           <div className="p-6 flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sentimentData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={sentiment?.trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
                 <XAxis dataKey="month" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
@@ -218,25 +264,47 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Secondary Chart */}
+        {/* Cuisines Radar Chart */}
         <div className="rounded-xl border border-border/50 bg-card shadow-sm lg:col-span-3 overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-border/50 flex justify-between">
+            <div>
+              <h3 className="font-semibold leading-none tracking-tight">Cuisine Sentiment Matrix</h3>
+              <p className="text-sm text-muted-foreground mt-1.5">Average AI sentiment score by cuisine.</p>
+            </div>
+            <Crosshair className="w-5 h-5 text-muted-foreground" />
+          </div>
+          <div className="p-6 flex-1 min-h-[300px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={cuisines?.radar}>
+                <PolarGrid stroke="#333" />
+                <PolarAngleAxis dataKey="cuisine" tick={{ fill: '#888', fontSize: 11 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name="Sentiment Score" dataKey="sentiment" stroke="#f43f5e" fill="#f43f5e" fillOpacity={0.5} />
+                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Secondary Chart */}
+        <div className="rounded-xl border border-border/50 bg-card shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
           <div className="p-6 border-b border-border/50">
-            <h3 className="font-semibold leading-none tracking-tight">Top Cuisines Predicted</h3>
-            <p className="text-sm text-muted-foreground mt-1.5">Distribution of most popular cuisines across dataset.</p>
+            <h3 className="font-semibold leading-none tracking-tight">Top Cuisines</h3>
+            <p className="text-sm text-muted-foreground mt-1.5">Dataset distribution.</p>
           </div>
           <div className="p-6 flex-1 min-h-[300px] flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={cuisineData}
+                  data={cuisines?.distribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={50}
+                  outerRadius={80}
                   paddingAngle={2}
                   dataKey="value"
                 >
-                  {cuisineData?.map((entry: any, index: number) => (
+                  {cuisines?.distribution?.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

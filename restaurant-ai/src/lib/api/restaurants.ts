@@ -14,7 +14,18 @@ export const RestaurantAPI = {
   
   getRestaurantById: (id: string) => fetchAPI<Restaurant & { reviews: Review[] }>(`/api/restaurants/${id}`),
   
-  getDashboard: () => fetchAPI<DashboardData>('/api/dashboard'),
+  // Analytics API
+  getModelInfo: () => fetchAPI('/api/model-info'),
+
+  getAnalyticsOverview: () => fetchAPI('/api/analytics/overview'),
+
+  getAnalyticsSentiment: () => fetchAPI('/api/analytics/sentiment'),
+
+  getAnalyticsCuisines: () => fetchAPI('/api/analytics/cuisines'),
+
+  getAnalyticsKeywords: () => fetchAPI('/api/analytics/keywords'),
+
+  getDashboardFeed: () => fetchAPI('/api/analytics/dashboard-feed'),
   
   predictRating: (reviewText: string, restaurantName?: string) => 
     fetchAPI<any>('/api/predict', {
