@@ -9,7 +9,7 @@ export const revalidate = 60; // revalidate every minute
 export default async function Home() {
   let topRestaurants: any[] = [];
   try {
-    const data = await RestaurantAPI.getDashboard();
+    const data = await RestaurantAPI.getDashboardFeed();
     topRestaurants = data.top5 || [];
   } catch (error) {
     console.error("Failed to fetch top restaurants for home page", error);
