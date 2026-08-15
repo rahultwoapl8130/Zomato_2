@@ -14,6 +14,7 @@ export interface Restaurant {
   imageUrl: string;
   image?: string;
   link?: string;
+  aiExplanation?: string;
 }
 
 export interface Review {

@@ -153,14 +153,35 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {restaurant.menu?.map((item: any) => (
-                    <div key={item.id} className="flex gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
-                      <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    <div key={item.id} className="flex gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer relative overflow-hidden group">
+                      <div className="w-24 h-24 bg-muted rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        
+                        {/* Dish Sentiment Tag */}
+                        {item.aiTag && (
+                          <div className={`absolute bottom-0 left-0 right-0 text-[10px] font-bold text-center py-1 text-white backdrop-blur-md ${
+                            item.aiTag.includes('Must Try') ? 'bg-green-600/90' : 
+                            item.aiTag.includes('Avoid') ? 'bg-red-600/90' : 'bg-gray-800/80'
+                          }`}>
+                            {item.aiTag}
+                          </div>
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-sm">{item.name}</h4>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
-                        <div className="font-semibold text-primary mt-2">₹{item.price}</div>
+                      
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex justify-between items-start">
+                          <h4 className="font-bold text-sm leading-tight pr-2">{item.name}</h4>
+                          {item.dishSentimentScore && (
+                            <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
+                              item.dishSentimentScore >= 80 ? 'bg-green-100 text-green-700' :
+                              item.dishSentimentScore <= 40 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                            }`}>
+                              {item.dishSentimentScore}%
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{item.description}</p>
+                        <div className="font-semibold text-primary mt-auto pt-2">₹{item.price}</div>
                       </div>
                     </div>
                   ))}

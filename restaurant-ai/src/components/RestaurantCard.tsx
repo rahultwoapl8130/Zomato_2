@@ -48,6 +48,14 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <span className="line-clamp-1">{restaurant.location}</span>
             <span className="ml-auto font-medium text-foreground">₹{restaurant.costForTwo} for two</span>
           </div>
+
+          {restaurant.aiExplanation && (
+            <div className="mt-4 -mx-4 -mb-4 bg-primary/10 px-4 py-3 border-t border-primary/20">
+              <p className="text-xs text-primary font-medium leading-relaxed">
+                {restaurant.aiExplanation}
+              </p>
+            </div>
+          )}
         </div>
         </div>
       </Link>
