@@ -51,32 +51,35 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
           alt={restaurant.name} 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+        {/* Dark overlay for better text contrast while keeping the image visible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
         
         <div className="absolute bottom-0 left-0 w-full">
-          <div className="container mx-auto px-4 md:px-6 pb-8 max-w-7xl">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">{restaurant.name}</h1>
-            <p className="text-white/80 text-lg">{restaurant.cuisines?.join(', ')}</p>
+          <div className="container mx-auto px-4 md:px-6 pb-10 max-w-7xl">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-3 tracking-tight drop-shadow-md">{restaurant.name}</h1>
+            <p className="text-white/90 text-lg md:text-xl font-medium drop-shadow-sm">{restaurant.cuisines?.join(', ')}</p>
             
-            <div className="flex items-center gap-4 mt-6">
-              <div className="bg-primary text-primary-foreground px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold">
-                {restaurant.rating} <Star className="w-4 h-4 fill-current" />
-                <span className="text-xs font-normal opacity-80 ml-1 block border-l border-white/30 pl-2">5600 votes</span>
+            <div className="flex flex-wrap items-center gap-4 mt-6">
+              <div className="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2 font-bold shadow-lg shadow-primary/20">
+                <span className="text-lg">{restaurant.rating}</span>
+                <Star className="w-5 h-5 fill-current" />
+                <span className="text-xs font-normal opacity-90 ml-1 border-l border-white/30 pl-2">5600 votes</span>
               </div>
+              
               <div 
-                className="bg-background/20 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold"
+                className="bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-bold shadow-lg"
                 title={`Based on ${restaurant.reviews?.length || 0} real reviews`}
               >
-                {restaurant.sentimentScore}%
-                <span className="text-xs font-normal opacity-80 block ml-1 text-center">Positive AI Sentiment</span>
+                <span className="text-lg text-green-400">{restaurant.sentimentScore}%</span>
+                <span className="text-xs font-medium opacity-90 ml-1">Positive AI Sentiment</span>
               </div>
             </div>
           </div>
           
           <button 
             onClick={() => toggleFavourite(id)}
-            className={`absolute top-6 right-6 z-10 p-3 rounded-full backdrop-blur-md transition-all ${
-              isFav ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-background/60 text-white hover:bg-background/90 shadow-md hover:text-primary'
+            className={`absolute top-6 right-6 z-10 p-3.5 rounded-full backdrop-blur-md transition-all ${
+              isFav ? 'bg-primary text-white shadow-lg' : 'bg-black/40 text-white border border-white/20 hover:bg-black/60 shadow-md hover:text-primary'
             }`}
           >
             <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
