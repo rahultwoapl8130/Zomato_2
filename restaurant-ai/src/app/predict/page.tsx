@@ -48,14 +48,28 @@ export default function PredictPage() {
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="e.g., 'The food was amazing, but the service was a bit slow. The ambience is nice though.'"
-          className="w-full min-h-[150px] p-4 rounded-xl border border-input bg-background resize-y focus:outline-none focus:ring-2 focus:ring-primary/50 text-base"
+          className="w-full min-h-[150px] p-4 rounded-xl border border-input bg-background resize-y focus:outline-none focus:ring-2 focus:ring-primary/50 text-base mb-4"
         />
-        <div className="mt-4 flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">Try pasting real Zomato reviews.</p>
+        
+        {/* Quick Test Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button onClick={() => setReviewText("The food was absolutely amazing and delicious, but the service was terrible and very slow.")} className="text-xs bg-muted hover:bg-muted/80 text-muted-foreground px-3 py-1.5 rounded-full transition-colors">
+            Try Mixed Feedback
+          </button>
+          <button onClick={() => setReviewText("What a great place! Excellent food, perfect ambience, and awesome staff. Loved it!")} className="text-xs bg-muted hover:bg-muted/80 text-muted-foreground px-3 py-1.5 rounded-full transition-colors">
+            Try Positive Review
+          </button>
+          <button onClick={() => setReviewText("Terrible experience. The food was cold and disgusting. Will never visit again.")} className="text-xs bg-muted hover:bg-muted/80 text-muted-foreground px-3 py-1.5 rounded-full transition-colors">
+            Try Negative Review
+          </button>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <p className="text-sm text-muted-foreground hidden sm:block">Try pasting real Zomato reviews.</p>
           <button
             onClick={handlePredict}
             disabled={isPredicting}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-medium hover:bg-primary/90 transition-colors disabled:opacity-70"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-medium hover:bg-primary/90 transition-colors disabled:opacity-70"
           >
             {isPredicting ? "Analyzing..." : "Predict Rating"}
             <Send className="w-4 h-4" />
@@ -77,13 +91,13 @@ export default function PredictPage() {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm">
+            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm flex flex-col items-center justify-center">
               <p className="text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wider">Predicted Rating</p>
               <div className="text-5xl font-extrabold text-primary">{result.prediction}</div>
               <p className="text-sm text-muted-foreground mt-2">out of 5.0</p>
             </div>
             
-            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm">
+            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm flex flex-col items-center justify-center">
               <p className="text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wider">Sentiment Class</p>
               <div className={`text-3xl font-bold mt-2 ${
                 result.sentiment === 'Positive' ? 'text-green-500' : 
@@ -93,20 +107,57 @@ export default function PredictPage() {
               </div>
             </div>
             
-            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm">
-              <p className="text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wider">Confidence Score</p>
-              <div className="text-4xl font-bold mt-1 text-primary/80">{result.confidence}%</div>
-              <p className="text-xs text-muted-foreground mt-2">Model: {result.model}</p>
+            <div className="bg-card rounded-2xl border border-border/50 p-6 text-center shadow-sm flex flex-col items-center justify-center">
+              <p className="text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wider">Confidence Score</p>
+              
+              {/* Animated Radial Gauge */}
+              <div className="relative w-24 h-24">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" strokeWidth="8" className="text-muted" />
+                  <circle 
+                    cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" strokeWidth="8" 
+                    className="text-primary transition-all duration-1000 ease-out" 
+                    strokeDasharray="251.2" 
+                    strokeDashoffset={251.2 - (251.2 * result.confidence) / 100}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold">{result.confidence}%</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">Model: {result.model}</p>
             </div>
           </div>
           
+          {/* Keyword Highlighting Box */}
+          <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm mb-6">
+            <h3 className="font-bold text-lg mb-4">Review Analysis</h3>
+            <div className="p-4 bg-background border border-border/50 rounded-xl text-lg leading-relaxed">
+              {(() => {
+                // Highlight words found in explainability
+                let highlightedText = reviewText;
+                if (result.explainability) {
+                  result.explainability.forEach((factor: any) => {
+                    if (factor.feature && factor.feature !== 'overall_tone') {
+                      const regex = new RegExp(`\\b${factor.feature}\\b`, 'gi');
+                      const colorClass = factor.impact === '+' ? 'bg-green-500/20 text-green-600 font-bold px-1 rounded' : 'bg-rose-500/20 text-rose-600 font-bold px-1 rounded';
+                      highlightedText = highlightedText.replace(regex, `<span class="${colorClass}">$&</span>`);
+                    }
+                  });
+                }
+                return <div dangerouslySetInnerHTML={{ __html: highlightedText || "No review text provided." }} />;
+              })()}
+            </div>
+          </div>
+
           {result.explainability && result.explainability.length > 0 && (
             <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
               <h3 className="font-bold text-lg mb-4">SHAP Explainability Factors</h3>
               <div className="space-y-3">
                 {result.explainability.map((factor: any, i: number) => (
                   <div key={i} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                    <span className="font-medium">{factor.feature}</span>
+                    <span className="font-medium capitalize">{factor.feature.replace('_', ' ')}</span>
                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                       factor.impact === '+' ? 'bg-green-500/10 text-green-600' : 'bg-rose-500/10 text-rose-600'
                     }`}>
