@@ -19,16 +19,16 @@ export default async function Home() {
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       <main className="flex-1">
         <section className="w-full py-20 md:py-28 lg:py-36 bg-cover bg-center bg-no-repeat relative flex items-center justify-center" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-8 text-center">
               <div className="space-y-4 max-w-3xl">
-                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-gray-800 to-gray-500 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none text-white drop-shadow-md animate-in fade-in slide-in-from-bottom-4 duration-700">
                   Discover Restaurants.<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-rose-500 drop-shadow-sm">Understand Reviews.</span><br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-primary drop-shadow-md">Understand Reviews.</span><br />
                   Predict Sentiment.
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-lg/relaxed xl:text-xl/relaxed animate-in fade-in slide-in-from-bottom-5 duration-1000">
+                <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl/relaxed lg:text-lg/relaxed xl:text-xl/relaxed font-medium animate-in fade-in slide-in-from-bottom-5 duration-1000 drop-shadow-md">
                   RestaurantAI combines restaurant information, customer reviews, and machine learning intelligence to provide unparalleled dining analytics.
                 </p>
               </div>
@@ -41,36 +41,40 @@ export default async function Home() {
         </section>
 
         {/* Feature Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/20">
+        <section className="w-full py-16 md:py-24 lg:py-32 bg-white">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="flex flex-col items-center space-y-4 text-center p-6 rounded-2xl bg-background border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Search className="h-6 w-6 text-primary" />
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold tracking-tight mb-4 text-gray-900">Powerful Capabilities</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">Everything you need to understand customer sentiment and improve restaurant discovery.</p>
+            </div>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                  <Search className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold">Smart Discovery</h3>
-                <p className="text-sm text-muted-foreground">Find the perfect restaurant based on location, cuisine, and average cost.</p>
+                <h3 className="text-xl font-semibold text-gray-900">Smart Discovery</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Find the perfect restaurant based on location, cuisine, and average cost.</p>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center p-6 rounded-2xl bg-background border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Star className="h-6 w-6 text-primary" />
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                  <Star className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold">Review Analytics</h3>
-                <p className="text-sm text-muted-foreground">Dive deep into customer reviews and see what people really think.</p>
+                <h3 className="text-xl font-semibold text-gray-900">Review Analytics</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Dive deep into customer reviews and see what people really think.</p>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center p-6 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <TrendingUp className="h-6 w-6 text-primary" />
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                  <TrendingUp className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold">Restaurant Intelligence</h3>
-                <p className="text-sm text-muted-foreground">Comprehensive business intelligence dashboards for every restaurant.</p>
+                <h3 className="text-xl font-semibold text-gray-900">Intelligence</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Comprehensive business intelligence dashboards for every restaurant.</p>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center p-6 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Brain className="h-6 w-6 text-primary" />
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                  <Brain className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold">Explainable AI</h3>
-                <p className="text-sm text-muted-foreground">Don't just get a score. See exactly which factors drove the AI prediction.</p>
+                <h3 className="text-xl font-semibold text-gray-900">Explainable AI</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Don't just get a score. See exactly which factors drove the AI prediction.</p>
               </div>
             </div>
           </div>
