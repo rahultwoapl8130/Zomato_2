@@ -7,7 +7,7 @@ import { RestaurantCard } from "@/components/RestaurantCard";
 export const revalidate = 60; // revalidate every minute
 
 export default async function Home() {
-  let topRestaurants = [];
+  let topRestaurants: any[] = [];
   try {
     const data = await RestaurantAPI.getDashboard();
     topRestaurants = data.top5 || [];

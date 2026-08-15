@@ -19,7 +19,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
     async function fetchData() {
       try {
         const data = await RestaurantAPI.getRestaurantById(id);
-        if (!data.error) {
+        if (data && !(data as any).error) {
           setRestaurant(data);
         }
       } catch (err) {
