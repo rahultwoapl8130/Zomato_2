@@ -13,6 +13,7 @@ export interface Restaurant {
   reviewCount: number;
   imageUrl: string;
   image?: string;
+  link?: string;
 }
 
 export interface Review {

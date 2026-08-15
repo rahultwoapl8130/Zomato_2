@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { use } from "react";
-import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon } from "lucide-react";
+import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -63,9 +63,12 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 {restaurant.rating} <Star className="w-4 h-4 fill-current" />
                 <span className="text-xs font-normal opacity-80 ml-1 block border-l border-white/30 pl-2">5600 votes</span>
               </div>
-              <div className="bg-background/20 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold">
+              <div 
+                className="bg-background/20 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold"
+                title={`Based on ${restaurant.reviews?.length || 0} real reviews`}
+              >
                 {restaurant.sentimentScore}%
-                <span className="text-xs font-normal opacity-80 block ml-1 text-center">AI Sentiment</span>
+                <span className="text-xs font-normal opacity-80 block ml-1 text-center">Positive AI Sentiment</span>
               </div>
             </div>
           </div>
@@ -235,6 +238,14 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
           <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm sticky top-20">
             <h3 className="font-bold text-lg mb-4">Actions</h3>
             <div className="space-y-3">
+              {restaurant.link && restaurant.link != 'nan' && (
+                <button 
+                  onClick={() => window.open(restaurant.link, '_blank')}
+                  className="w-full bg-[#E23744] hover:bg-[#cb202d] text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-md"
+                >
+                  <ExternalLink className="w-4 h-4" /> View on Zomato
+                </button>
+              )}
               <button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-md">
                 <Navigation className="w-4 h-4" /> Get Directions
               </button>

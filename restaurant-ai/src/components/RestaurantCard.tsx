@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, MapPin, TrendingUp, Heart } from "lucide-react";
+import { Star, MapPin, TrendingUp, Heart, ExternalLink } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import type { Restaurant } from "@/lib/mock-data";
 
@@ -28,9 +28,9 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <span>{restaurant.rating}</span>
             <Star className="w-3.5 h-3.5 fill-primary text-primary" />
           </div>
-          <div className="absolute bottom-3 right-3 bg-primary/90 text-primary-foreground backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
+          <div className="absolute bottom-3 right-3 bg-primary/90 text-primary-foreground backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm" title="Based on real customer feedback %">
             <TrendingUp className="w-3.5 h-3.5" />
-            <span>AI: {restaurant.sentimentScore}%</span>
+            <span>AI Score: {restaurant.sentimentScore}% Positive</span>
           </div>
         </div>
         
@@ -52,7 +52,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         </div>
       </Link>
       
-      {/* Favourite Button (Absolute positioned on top of the card) */}
+      {/* Favourite Button */}
       <button 
         onClick={(e) => {
           e.preventDefault();
@@ -65,6 +65,21 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
       >
         <Heart className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
       </button>
+
+      {/* External Zomato Link Button */}
+      {restaurant.link && restaurant.link != 'nan' && (
+        <button 
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open(restaurant.link, '_blank');
+          }}
+          className="absolute bottom-[110px] left-3 z-10 p-2 bg-background/80 text-muted-foreground hover:bg-background hover:text-primary rounded-full backdrop-blur-sm transition-all shadow-sm"
+          title="View on Zomato"
+        >
+          <ExternalLink className="w-4 h-4" />
+        </button>
+      )}
     </div>
   );
 }
