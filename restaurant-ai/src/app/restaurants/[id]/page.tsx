@@ -192,6 +192,37 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                   <Info className="w-6 h-6 text-primary" /> AI Analyzed Reviews
                 </h2>
+                
+                {/* AI Sentiment Summary Box */}
+                {restaurant.aiSummary && (
+                  <div className="mb-8 p-6 bg-primary/5 border border-primary/20 rounded-2xl shadow-sm">
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <Star className="w-5 h-5 text-primary fill-current" /> 
+                      AI Sentiment Analysis
+                    </h3>
+                    
+                    {restaurant.sentimentDistribution && (
+                      <div className="flex w-full h-3 bg-muted rounded-full overflow-hidden mb-4">
+                        <div className="bg-green-500 h-full" style={{ width: `${restaurant.sentimentDistribution.positive}%` }} title={`Positive: ${restaurant.sentimentDistribution.positive}%`}></div>
+                        <div className="bg-yellow-500 h-full" style={{ width: `${restaurant.sentimentDistribution.neutral}%` }} title={`Neutral: ${restaurant.sentimentDistribution.neutral}%`}></div>
+                        <div className="bg-red-500 h-full" style={{ width: `${restaurant.sentimentDistribution.negative}%` }} title={`Negative: ${restaurant.sentimentDistribution.negative}%`}></div>
+                      </div>
+                    )}
+                    
+                    <p className="text-muted-foreground leading-relaxed">
+                      {restaurant.aiSummary}
+                    </p>
+                    
+                    {restaurant.sentimentDistribution && (
+                      <div className="flex gap-4 mt-4 text-xs font-semibold text-muted-foreground">
+                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-green-500"></div> {restaurant.sentimentDistribution.positive}% Positive</div>
+                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-yellow-500"></div> {restaurant.sentimentDistribution.neutral}% Neutral</div>
+                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-red-500"></div> {restaurant.sentimentDistribution.negative}% Negative</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 <div className="mb-4 text-sm text-muted-foreground">
                   Showing {restaurant.reviews?.length || 0} real reviews from Zomato dataset.
                 </div>
@@ -199,7 +230,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 <div className="space-y-4">
                   {restaurant.reviews && restaurant.reviews.length > 0 ? (
                     restaurant.reviews.map((review: any) => (
-                      <div key={review.id} className="bg-card border border-border/50 rounded-xl p-5 shadow-sm">
+                      <div key={review.id} className="bg-card border border-border/50 rounded-xl p-5 shadow-sm hover:border-primary/30 transition-colors">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <div className="font-bold">{review.customerName}</div>
@@ -232,7 +263,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               </section>
             )}
           </div>
-
+          
         {/* Sidebar */}
         <div className="space-y-6">
           <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm sticky top-20">
@@ -254,16 +285,19 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               </button>
             </div>
             
-            <hr className="my-6 border-border/50" />
-            
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-              <h4 className="font-bold text-primary mb-2 text-sm flex items-center gap-1">
-                <Star className="w-4 h-4 fill-current" /> Why eat here?
-              </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Based on AI analysis of {restaurant.reviews?.length || 0} reviews, people love the {restaurant.cuisines?.[0] || 'food'} and praise the ambience. Highly recommended for dinner.
-              </p>
-            </div>
+            {restaurant.aiSummary && (
+              <>
+                <hr className="my-6 border-border/50" />
+                <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+                  <h4 className="font-bold text-primary mb-2 text-sm flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-current" /> AI Verdict
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">
+                    {restaurant.aiSummary}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
