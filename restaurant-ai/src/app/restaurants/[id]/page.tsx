@@ -195,15 +195,17 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                   <Navigation className="w-6 h-6 text-primary" /> Location
                 </h2>
                 <div className="flex-1 bg-muted rounded-xl relative overflow-hidden">
-                  {/* Fake map representation */}
-                  <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop" alt="Map" className="w-full h-full object-cover opacity-70" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-background/90 p-4 rounded-xl shadow-lg border border-border/50 max-w-xs text-center backdrop-blur-sm">
-                      <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
-                      <h3 className="font-bold">{restaurant.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">{restaurant.location}</p>
-                    </div>
-                  </div>
+                  {/* Live Google Map embed based on restaurant name and location */}
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }}
+                    loading="lazy" 
+                    allowFullScreen 
+                    referrerPolicy="no-referrer-when-downgrade" 
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(restaurant.name + ' ' + restaurant.location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    title={`Map showing location of ${restaurant.name}`}
+                  ></iframe>
                 </div>
               </section>
             )}
