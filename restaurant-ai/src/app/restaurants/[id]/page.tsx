@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { use } from "react";
 import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { RestaurantAPI } from "@/lib/api/restaurants";
 
 export default function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -17,9 +18,8 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`https://zomato-3-hi4f.onrender.com/api/restaurants/${id}`);
-        const data = await res.json();
-        if (res.ok) {
+        const data = await RestaurantAPI.getRestaurantById(id);
+        if (!data.error) {
           setRestaurant(data);
         }
       } catch (err) {

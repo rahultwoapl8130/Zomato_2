@@ -10,14 +10,10 @@ export function Navbar() {
   const { user, login, logout } = useAuth();
 
   const navLinks = [
-    { name: "Shop By All", href: "/restaurants" },
     { name: "Home", href: "/" },
-    { name: "Restaurants", href: "/restaurants" },
-    { name: "Cuisines", href: "/restaurants?filter=cuisines" },
-    { name: "Offers", href: "/offers" },
-    { name: "AI Recommendations", href: "/dashboard" },
-    { name: "Favourites", href: "/favourites" },
-    { name: "About Us", href: "/about" },
+    { name: "Explore Restaurants", href: "/restaurants" },
+    { name: "Reviews & Predictor", href: "/predict" },
+    { name: "AI Dashboard", href: "/dashboard" },
   ];
 
   return (

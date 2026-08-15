@@ -4,16 +4,16 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { RestaurantAPI, DashboardData } from '@/lib/api/restaurants';
 
 export default function DashboardPage() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('https://zomato-3-hi4f.onrender.com/api/dashboard');
-        const json = await res.json();
+        const json = await RestaurantAPI.getDashboard();
         setData(json);
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);

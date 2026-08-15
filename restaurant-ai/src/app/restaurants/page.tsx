@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Search, SlidersHorizontal, ArrowUpDown, Check, Loader2 } from "lucide-react";
 import { RestaurantCard } from "@/components/RestaurantCard";
+import { RestaurantAPI } from "@/lib/api/restaurants";
 
 export default function RestaurantsPage() {
   const [allRestaurants, setAllRestaurants] = useState<any[]>([]);
@@ -16,8 +17,7 @@ export default function RestaurantsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('https://zomato-3-hi4f.onrender.com/api/restaurants');
-        const data = await res.json();
+        const data = await RestaurantAPI.getRestaurants();
         setAllRestaurants(data);
       } catch (err) {
         console.error("Failed to fetch restaurants", err);
