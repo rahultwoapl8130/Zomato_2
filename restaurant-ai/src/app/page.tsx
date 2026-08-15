@@ -18,12 +18,12 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       <main className="flex-1">
-        <section className="w-full py-20 md:py-28 lg:py-36 bg-cover bg-center bg-no-repeat relative flex items-center justify-center" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
+        <section className="w-full py-16 md:py-20 lg:py-24 bg-cover bg-center bg-no-repeat relative flex items-center justify-center min-h-[75vh]" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
           <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center space-y-8 text-center">
+            <div className="flex flex-col items-center space-y-6 text-center">
               <div className="space-y-4 max-w-3xl">
-                <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl/none text-white drop-shadow-md animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-white drop-shadow-md animate-in fade-in slide-in-from-bottom-4 duration-700">
                   Discover Restaurants.<br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-primary drop-shadow-md">Understand Reviews.</span><br />
                   Predict Sentiment.
