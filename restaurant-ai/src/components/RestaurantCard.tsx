@@ -24,6 +24,11 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             alt={restaurant.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
+          {restaurant.bestFor && (
+            <div className="absolute top-3 left-14 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-primary flex items-center shadow-sm">
+              🏆 Best for {restaurant.bestFor}
+            </div>
+          )}
           <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-lg text-sm font-bold flex items-center gap-1 shadow-sm">
             <span>{restaurant.rating}</span>
             <Star className="w-3.5 h-3.5 fill-primary text-primary" />

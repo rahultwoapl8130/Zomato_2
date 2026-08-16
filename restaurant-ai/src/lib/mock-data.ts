@@ -1,3 +1,8 @@
+export interface DishInsight {
+  name: string;
+  score: number;
+}
+
 export interface Restaurant {
   id: string;
   name: string;
@@ -15,6 +20,10 @@ export interface Restaurant {
   image?: string;
   link?: string;
   aiExplanation?: string;
+  bestFor?: string;
+  pros?: string[];
+  cons?: string[];
+  dishInsights?: DishInsight[];
 }
 
 export interface Review {

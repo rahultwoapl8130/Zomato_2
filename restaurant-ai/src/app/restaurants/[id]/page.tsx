@@ -146,6 +146,67 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
           </section>
+
+          {/* AI Pros & Cons Section */}
+          {(restaurant.pros?.length > 0 || restaurant.cons?.length > 0) && (
+            <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Star className="w-5 h-5 text-primary" /> AI Review Highlights
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {restaurant.pros?.length > 0 && (
+                  <div className="bg-green-500/5 rounded-xl p-4 border border-green-500/20">
+                    <h3 className="font-semibold text-green-700 mb-3 flex items-center gap-2">
+                      <Check className="w-4 h-4" /> Loved by customers
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {restaurant.pros.map((pro: string, i: number) => (
+                        <span key={i} className="px-3 py-1 bg-green-500/10 text-green-700 text-sm font-medium rounded-full">
+                          {pro}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {restaurant.cons?.length > 0 && (
+                  <div className="bg-red-500/5 rounded-xl p-4 border border-red-500/20">
+                    <h3 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                      <X className="w-4 h-4" /> Warned by AI
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {restaurant.cons.map((con: string, i: number) => (
+                        <span key={i} className="px-3 py-1 bg-red-500/10 text-red-700 text-sm font-medium rounded-full">
+                          {con}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* AI Dish Insights Section */}
+          {restaurant.dishInsights?.length > 0 && (
+            <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Star className="w-5 h-5 text-primary" /> AI Dish Insights
+              </h2>
+              <div className="space-y-3">
+                {restaurant.dishInsights.map((dish: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center p-3 border border-border/50 rounded-lg">
+                    <span className="font-medium">{dish.name}</span>
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                      dish.score >= 70 ? 'bg-green-100 text-green-700' :
+                      dish.score <= 40 ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                    }`}>
+                      {dish.score}% Positive
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
               </div>
             )}
 
