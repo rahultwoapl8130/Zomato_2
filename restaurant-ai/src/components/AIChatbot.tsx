@@ -31,7 +31,7 @@ export function AIChatbot() {
 
     try {
       // Use the actual backend API deployed on Render or local depending on env
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const baseUrl = 'https://zomato-3-hi4f.onrender.com';
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: {
@@ -48,7 +48,7 @@ export function AIChatbot() {
         setMessages(prev => [...prev, { role: 'ai', text: `Error parsing JSON. Status: ${response.status}. URL: ${baseUrl}/api/chat. Response text: ${textText.substring(0, 50)}...` }]);
       }
     } catch (error: any) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const baseUrl = 'https://zomato-3-hi4f.onrender.com';
       setMessages(prev => [...prev, { role: 'ai', text: `Connection Error! URL: ${baseUrl}/api/chat. Error details: ${error.message}` }]);
     } finally {
       setIsLoading(false);
