@@ -40,10 +40,16 @@ export function AIChatbot() {
         body: JSON.stringify({ query: userMessage })
       });
 
-      const data = await response.json();
-      setMessages(prev => [...prev, { role: 'ai', text: data.response }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I'm having trouble connecting to the backend right now." }]);
+      const textText = await response.text();
+      try {
+        const data = JSON.parse(textText);
+        setMessages(prev => [...prev, { role: 'ai', text: data.response || "No response field in JSON" }]);
+      } catch (parseError) {
+        setMessages(prev => [...prev, { role: 'ai', text: `Error parsing JSON. Status: ${response.status}. URL: ${baseUrl}/api/chat. Response text: ${textText.substring(0, 50)}...` }]);
+      }
+    } catch (error: any) {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      setMessages(prev => [...prev, { role: 'ai', text: `Connection Error! URL: ${baseUrl}/api/chat. Error details: ${error.message}` }]);
     } finally {
       setIsLoading(false);
     }
