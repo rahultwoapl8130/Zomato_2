@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageSquare, X, Send, Loader2, Bot } from "lucide-react";
 
 export function AIChatbot() {
@@ -11,6 +11,31 @@ export function AIChatbot() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Notification sound using Web Audio API (no external file needed)
+  const playNotificationSound = useCallback(() => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      // Pleasant "ding" sound
+      oscillator.frequency.setValueAtTime(830, audioCtx.currentTime);
+      oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime + 0.1);
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.4);
+    } catch (err) {
+      // Silently ignore if audio not supported
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,6 +69,7 @@ export function AIChatbot() {
       try {
         const data = JSON.parse(textText);
         setMessages(prev => [...prev, { role: 'ai', text: data.response || "No response field in JSON" }]);
+        playNotificationSound();
       } catch (parseError) {
         setMessages(prev => [...prev, { role: 'ai', text: `Error parsing JSON. Status: ${response.status}. URL: ${baseUrl}/api/chat. Response text: ${textText.substring(0, 50)}...` }]);
       }
