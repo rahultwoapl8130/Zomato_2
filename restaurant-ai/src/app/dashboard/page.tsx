@@ -69,9 +69,20 @@ export default function DashboardPage() {
 
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Advanced Analytics</h1>
-        <p className="text-muted-foreground">Monitor real-time ML model performance, live feeds, and sentiment leaderboards based on Real Data.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3">
+            Advanced Analytics
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-500 border border-emerald-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Groq LPU Online
+            </span>
+          </h1>
+          <p className="text-muted-foreground">Monitor real-time ML model performance, live feeds, and sentiment leaderboards based on Real Data.</p>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -180,9 +191,17 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-3 mb-8">
         {/* Live Feed */}
         <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col md:col-span-1 h-[400px]">
-          <div className="p-5 border-b border-border/50">
-            <h3 className="font-semibold flex items-center gap-2"><Activity className="w-4 h-4 text-primary"/> Live Review Feed</h3>
-            <p className="text-xs text-muted-foreground mt-1">Real-time ML analysis stream</p>
+          <div className="p-5 border-b border-border/50 flex justify-between items-center bg-primary/5">
+            <div>
+              <h3 className="font-semibold flex items-center gap-2">
+                <Activity className="w-4 h-4 text-primary animate-pulse"/> Live Review Feed
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">Real-time ML analysis stream</p>
+            </div>
+            <span className="flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+            </span>
           </div>
           <div className="p-0 overflow-y-auto flex-1">
             {feed?.reviews?.map((review: any) => (
