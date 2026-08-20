@@ -20,7 +20,7 @@ export const RestaurantAPI = {
   getAnalyticsOverview: () => fetchAPI('/api/analytics/overview'),
 
   getAnalyticsSentiment: () => fetchAPI('/api/analytics/sentiment'),
-
+  getAnalyticsEvaluation: () => fetchAPI('/api/analytics/evaluation'),
   getAnalyticsCuisines: () => fetchAPI('/api/analytics/cuisines'),
 
   getAnalyticsKeywords: () => fetchAPI('/api/analytics/keywords'),

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LineChart, Line } from 'recharts';
 import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2, Target, Crosshair, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { RestaurantAPI } from '@/lib/api/restaurants';
@@ -19,14 +19,16 @@ export default function DashboardPage() {
           sentiment,
           cuisines,
           keywords,
-          feed
+          feed,
+          evaluation
         ] = await Promise.all([
           RestaurantAPI.getModelInfo(),
           RestaurantAPI.getAnalyticsOverview(),
           RestaurantAPI.getAnalyticsSentiment(),
           RestaurantAPI.getAnalyticsCuisines(),
           RestaurantAPI.getAnalyticsKeywords(),
-          RestaurantAPI.getDashboardFeed()
+          RestaurantAPI.getDashboardFeed(),
+          RestaurantAPI.getAnalyticsEvaluation()
         ]);
 
         setData({
@@ -35,7 +37,8 @@ export default function DashboardPage() {
           sentiment,
           cuisines,
           keywords,
-          feed
+          feed,
+          evaluation
         });
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
@@ -136,6 +139,84 @@ export default function DashboardPage() {
           <p className="text-xs text-muted-foreground">Across all listed restaurants</p>
         </div>
       </div>
+
+      {/* Model Evaluation Metrics Section */}
+      {evaluation && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold tracking-tight mb-4 flex items-center gap-2">
+            <Target className="w-6 h-6 text-primary" /> Model Evaluation Metrics
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Confusion Matrix (Simple visual representation) */}
+            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm flex flex-col">
+              <h3 className="font-semibold mb-1">Confusion Matrix</h3>
+              <p className="text-xs text-muted-foreground mb-4">True vs False Predictions</p>
+              <div className="grid grid-cols-2 gap-2 flex-1">
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex flex-col items-center justify-center text-center">
+                  <span className="text-xs text-muted-foreground uppercase font-bold">True Pos</span>
+                  <span className="text-xl font-bold text-green-500">{evaluation.confusionMatrix.truePositive}</span>
+                </div>
+                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex flex-col items-center justify-center text-center">
+                  <span className="text-xs text-muted-foreground uppercase font-bold">False Pos</span>
+                  <span className="text-xl font-bold text-red-500">{evaluation.confusionMatrix.falsePositive}</span>
+                </div>
+                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex flex-col items-center justify-center text-center">
+                  <span className="text-xs text-muted-foreground uppercase font-bold">False Neg</span>
+                  <span className="text-xl font-bold text-red-500">{evaluation.confusionMatrix.falseNegative}</span>
+                </div>
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex flex-col items-center justify-center text-center">
+                  <span className="text-xs text-muted-foreground uppercase font-bold">True Neg</span>
+                  <span className="text-xl font-bold text-green-500">{evaluation.confusionMatrix.trueNegative}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ROC-AUC Curve */}
+            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm flex flex-col h-[250px]">
+              <h3 className="font-semibold mb-1">ROC-AUC Curve</h3>
+              <p className="text-xs text-muted-foreground mb-4">Receiver Operating Characteristic</p>
+              <div className="flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={evaluation.rocAuc} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis dataKey="fpr" type="number" domain={[0, 1]} tick={{fontSize: 10}} stroke="#888" />
+                    <YAxis dataKey="tpr" type="number" domain={[0, 1]} tick={{fontSize: 10}} stroke="#888" />
+                    <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a' }} />
+                    <Line type="monotone" dataKey="tpr" stroke="#10b981" strokeWidth={2} dot={false} name="Model" />
+                    <Line type="linear" dataKey="fpr" stroke="#888" strokeDasharray="3 3" dot={false} name="Random" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Class Performance */}
+            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm flex flex-col">
+              <h3 className="font-semibold mb-1">Class-wise Performance</h3>
+              <p className="text-xs text-muted-foreground mb-4">Precision, Recall, F1-Score</p>
+              <div className="space-y-3">
+                {evaluation.classPerformance.map((c: any, i: number) => (
+                  <div key={i} className="flex flex-col gap-1">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-semibold">{c.class}</span>
+                      <span className="text-xs text-muted-foreground">F1: {c.f1}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-muted rounded p-1 text-center">
+                        <span className="text-[10px] text-muted-foreground block">Precision</span>
+                        <span className="text-xs font-bold">{c.precision}</span>
+                      </div>
+                      <div className="bg-muted rounded p-1 text-center">
+                        <span className="text-[10px] text-muted-foreground block">Recall</span>
+                        <span className="text-xs font-bold">{c.recall}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Leaderboard Section */}
       <div className="grid gap-6 md:grid-cols-2 mb-8">

@@ -13,6 +13,7 @@ export function Navbar() {
     { name: "Home", href: "/" },
     { name: "Explore Restaurants", href: "/restaurants" },
     { name: "Reviews & Predictor", href: "/predict" },
+    { name: "Compare", href: "/compare" },
     { name: "AI Dashboard", href: "/dashboard" },
     { name: "About", href: "/about" },
   ];

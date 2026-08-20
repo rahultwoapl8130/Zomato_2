@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { use } from "react";
-import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink } from "lucide-react";
+import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink, Brain } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { RestaurantAPI } from "@/lib/api/restaurants";
 
@@ -239,6 +239,37 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                         <span className="text-xs text-muted-foreground font-medium">· {dish.mentions} mentions</span>
                       )}
                     </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* AI Business Recommendations (Prescriptive Analytics) */}
+          {restaurant.businessRecommendations?.length > 0 && (
+            <section className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Brain className="w-5 h-5 text-primary" /> Business Prescriptive Actions
+              </h2>
+              <div className="space-y-4">
+                {restaurant.businessRecommendations.map((rec: any, i: number) => (
+                  <div key={i} className="flex flex-col gap-2 p-4 border border-border/50 rounded-xl bg-muted/20">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
+                          rec.priority === 'High' ? 'bg-red-500/10 text-red-600 border border-red-500/20' : 'bg-yellow-500/10 text-yellow-600 border border-yellow-500/20'
+                        }`}>
+                          {rec.priority} Priority
+                        </span>
+                        <span className="font-semibold">{rec.aspect}</span>
+                      </div>
+                      <span className="text-xs font-bold text-rose-500 bg-rose-500/10 px-2 py-1 rounded">
+                        {rec.negativeMentions}% Negative Mentions
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+                      <strong className="text-foreground">AI Recommendation:</strong> {rec.recommendation}
+                    </p>
                   </div>
                 ))}
               </div>
