@@ -47,34 +47,48 @@ export default async function Home() {
               <h2 className="text-3xl font-bold tracking-tight mb-4 text-gray-900">Powerful Capabilities</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">Everything you need to understand customer sentiment and improve restaurant discovery.</p>
             </div>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
-                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                <div className="p-3.5 rounded-2xl bg-blue-500/10 text-blue-600">
                   <Search className="h-7 w-7" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900">Smart Discovery</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">Find the perfect restaurant based on location, cuisine, and average cost.</p>
               </div>
               <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
-                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-600">
                   <Star className="h-7 w-7" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900">Review Analytics</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">Dive deep into customer reviews and see what people really think.</p>
               </div>
               <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
-                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-600">
                   <TrendingUp className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">Intelligence</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">Comprehensive business intelligence dashboards for every restaurant.</p>
+                <h3 className="text-xl font-semibold text-gray-900">Model Evaluation</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Comprehensive business intelligence dashboards with ROC curves and confusion matrices.</p>
               </div>
               <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
-                <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+                <div className="p-3.5 rounded-2xl bg-rose-500/10 text-rose-600">
                   <Brain className="h-7 w-7" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900">Explainable AI</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">Don't just get a score. See exactly which factors drove the AI prediction.</p>
+                <p className="text-sm text-gray-500 leading-relaxed">Don't just get a score. See exactly which factors (SHAP weights) drove the AI prediction.</p>
+              </div>
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-purple-500/10 text-purple-600">
+                  <BarChart3 className="h-7 w-7" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">Head-to-Head Compare</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Compare multiple restaurants side-by-side using unified AI aspect radar charts.</p>
+              </div>
+              <div className="flex flex-col items-start space-y-4 text-left p-8 rounded-3xl bg-gray-50/80 border border-gray-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3.5 rounded-2xl bg-indigo-500/10 text-indigo-600">
+                  <Database className="h-7 w-7" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">Prescriptive Actions</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">AI automatically flags priority business actions (like improving service time) based on reviews.</p>
               </div>
             </div>
           </div>
