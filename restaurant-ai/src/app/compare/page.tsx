@@ -56,7 +56,7 @@ export default function ComparePage() {
   }
 
   // Prepare radar data
-  const radarData = [];
+  let radarData: any[] = [];
   if (dataA && dataB) {
     const aspects = ["Food", "Service", "Ambience", "Price"];
     aspects.forEach(asp => {
