@@ -7,7 +7,7 @@ export function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
-    { role: 'ai', text: 'Hi! I am your AI Restaurant Assistant powered by Gemini. Ask me for recommendations based on real customer reviews!' }
+    { role: 'ai', text: 'Hi! I am your AI Restaurant Assistant powered by Groq Llama-3. Ask me for recommendations based on real customer reviews!' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -142,12 +142,15 @@ export function AIChatbot() {
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center animate-in zoom-in"
-        >
-          <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-primary rounded-full opacity-50 group-hover:opacity-100 blur animate-pulse transition duration-1000"></div>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center animate-in zoom-in"
+          >
+            <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+          </button>
+        </div>
       )}
     </div>
   );
