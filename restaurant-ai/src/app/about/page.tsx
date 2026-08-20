@@ -55,8 +55,8 @@ export default function AboutPage() {
             <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center shadow-md text-emerald-500">
               <BarChart3 className="w-6 h-6" />
             </div>
-            <h3 className="font-bold text-gray-800">Analytics</h3>
-            <p className="text-sm text-gray-500">Aspect-based sentiment tracking across Food, Service, Price, and Ambience.</p>
+            <h3 className="font-bold text-gray-800">Prescriptive Analytics</h3>
+            <p className="text-sm text-gray-500">LightGBM + SMOTETomek modeling with SHAP Explainable AI and actionable business recommendations.</p>
           </div>
         </div>
       </div>

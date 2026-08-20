@@ -125,43 +125,53 @@ export default async function Home() {
               <p className="text-muted-foreground max-w-2xl mx-auto">Our platform processes thousands of real reviews through our NLP pipeline to generate actionable insights.</p>
             </div>
             
-            <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-              <div className="flex flex-col items-center text-center w-full md:w-1/4">
-                <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-4 border border-blue-500/20 shadow-inner">
+            <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2">
+              <div className="flex flex-col items-center text-center w-full md:flex-1">
+                <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-4 border border-blue-500/20 shadow-inner group hover:scale-110 transition-transform">
                   <Database className="w-8 h-8 text-blue-500" />
                 </div>
-                <h4 className="font-bold">1. Dataset</h4>
+                <h4 className="font-bold text-sm">1. Dataset</h4>
                 <p className="text-xs text-muted-foreground mt-2">10k+ Real Zomato Reviews</p>
               </div>
               
-              <ArrowRight className="hidden md:block w-8 h-8 text-muted-foreground/30" />
+              <ArrowRight className="hidden md:block w-6 h-6 text-muted-foreground/30 flex-shrink-0" />
               
-              <div className="flex flex-col items-center text-center w-full md:w-1/4">
-                <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-4 border border-purple-500/20 shadow-inner">
+              <div className="flex flex-col items-center text-center w-full md:flex-1">
+                <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-4 border border-purple-500/20 shadow-inner group hover:scale-110 transition-transform">
                   <Search className="w-8 h-8 text-purple-500" />
                 </div>
-                <h4 className="font-bold">2. NLP & TF-IDF</h4>
+                <h4 className="font-bold text-sm">2. NLP & TF-IDF</h4>
                 <p className="text-xs text-muted-foreground mt-2">Keyword extraction & analysis</p>
               </div>
               
-              <ArrowRight className="hidden md:block w-8 h-8 text-muted-foreground/30" />
+              <ArrowRight className="hidden md:block w-6 h-6 text-muted-foreground/30 flex-shrink-0" />
               
-              <div className="flex flex-col items-center text-center w-full md:w-1/4">
-                <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-4 border border-rose-500/20 shadow-inner">
+              <div className="flex flex-col items-center text-center w-full md:flex-1">
+                <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-4 border border-rose-500/20 shadow-inner group hover:scale-110 transition-transform">
                   <Brain className="w-8 h-8 text-rose-500" />
                 </div>
-                <h4 className="font-bold">3. LightGBM</h4>
+                <h4 className="font-bold text-sm">3. LightGBM + SMOTE</h4>
                 <p className="text-xs text-muted-foreground mt-2">Predictive rating modeling</p>
               </div>
               
-              <ArrowRight className="hidden md:block w-8 h-8 text-muted-foreground/30" />
+              <ArrowRight className="hidden md:block w-6 h-6 text-muted-foreground/30 flex-shrink-0" />
               
-              <div className="flex flex-col items-center text-center w-full md:w-1/4">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-inner">
+              <div className="flex flex-col items-center text-center w-full md:flex-1">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-inner group hover:scale-110 transition-transform">
                   <BarChart3 className="w-8 h-8 text-emerald-500" />
                 </div>
-                <h4 className="font-bold">4. Insights</h4>
-                <p className="text-xs text-muted-foreground mt-2">Explainable AI & Dashboards</p>
+                <h4 className="font-bold text-sm">4. Explainable AI</h4>
+                <p className="text-xs text-muted-foreground mt-2">SHAP Weights & ROC Dashboards</p>
+              </div>
+
+              <ArrowRight className="hidden md:block w-6 h-6 text-muted-foreground/30 flex-shrink-0" />
+
+              <div className="flex flex-col items-center text-center w-full md:flex-1">
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-4 border border-amber-500/20 shadow-inner group hover:scale-110 transition-transform">
+                  <TrendingUp className="w-8 h-8 text-amber-500" />
+                </div>
+                <h4 className="font-bold text-sm">5. Business Value</h4>
+                <p className="text-xs text-muted-foreground mt-2">Prescriptive Actionable Insights</p>
               </div>
             </div>
           </div>
