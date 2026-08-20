@@ -143,12 +143,14 @@ export function AIChatbot() {
         </div>
       ) : (
         <div className="relative group">
-          <div className="absolute -inset-1 bg-primary rounded-full opacity-50 group-hover:opacity-100 blur animate-pulse transition duration-1000"></div>
+          {/* Animated ping ring behind the button */}
+          <div className="absolute -inset-2 bg-primary rounded-full animate-ping opacity-30"></div>
+          
           <button
             onClick={() => setIsOpen(true)}
-            className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center animate-in zoom-in"
+            className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center animate-bounce duration-1000"
           >
-            <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+            <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       )}
