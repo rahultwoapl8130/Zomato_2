@@ -37,7 +37,12 @@ export default function PredictPage() {
         <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
           <Brain className="w-8 h-8 text-primary" />
         </div>
-        <h1 className="text-4xl font-extrabold tracking-tight mb-4">AI Sentiment Predictor</h1>
+        <h1 className="text-4xl font-extrabold tracking-tight mb-4 flex items-center justify-center gap-3">
+          AI Sentiment Predictor
+          <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+            LightGBM + SMOTETomek
+          </span>
+        </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Test our machine learning pipeline. Paste a restaurant review below, and our model will predict the sentiment, rating, and highlight the key factors driving the score.
         </p>
@@ -153,18 +158,32 @@ export default function PredictPage() {
 
           {result.explainability && result.explainability.length > 0 && (
             <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-4">SHAP Explainability Factors</h3>
-              <div className="space-y-3">
-                {result.explainability.map((factor: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                    <span className="font-medium capitalize">{factor.feature.replace('_', ' ')}</span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      factor.impact === '+' ? 'bg-green-500/10 text-green-600' : 'bg-rose-500/10 text-rose-600'
-                    }`}>
-                      {factor.impact === '+' ? 'Positive Impact' : 'Negative Impact'}
-                    </span>
-                  </div>
-                ))}
+              <h3 className="font-bold text-lg mb-4">SHAP Explainability Factors (Feature Importance)</h3>
+              <div className="space-y-4">
+                {result.explainability.map((factor: any, i: number) => {
+                  const weightPct = factor.weight ? Math.round(factor.weight * 100) : 50;
+                  return (
+                    <div key={i} className="flex flex-col gap-2 p-3 bg-muted/50 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium capitalize">{factor.feature.replace('_', ' ')}</span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          factor.impact === '+' ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                        }`}>
+                          {factor.impact === '+' ? 'Positive Impact' : 'Negative Impact'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground w-8">{weightPct}%</span>
+                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full transition-all duration-1000 ${factor.impact === '+' ? 'bg-green-500' : 'bg-rose-500'}`}
+                            style={{ width: `${weightPct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
