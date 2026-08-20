@@ -13,25 +13,53 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
   const [activeTab, setActiveTab] = useState('overview');
   const [reviewFilter, setReviewFilter] = useState('All');
   const [reviewSearch, setReviewSearch] = useState('');
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [newReview, setNewReview] = useState({ name: 'Guest', rating: 5, text: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, favourites, toggleFavourite } = useAuth();
   
   const isFav = favourites.includes(id);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await RestaurantAPI.getRestaurantById(id);
-        if (data && !(data as any).error) {
-          setRestaurant(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch restaurant", err);
-      } finally {
-        setIsLoading(false);
+  async function fetchData() {
+    try {
+      const data = await RestaurantAPI.getRestaurantById(id);
+      if (data && !(data as any).error) {
+        setRestaurant(data);
       }
+    } catch (err) {
+      console.error("Failed to fetch restaurant", err);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchData();
   }, [id]);
+
+  const handleAddReview = async () => {
+    if (!newReview.text) return;
+    setIsSubmitting(true);
+    try {
+      await fetch(`https://zomato-3-hi4f.onrender.com/api/restaurants/${id}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: newReview.name,
+          rating: newReview.rating,
+          text: newReview.text
+        })
+      });
+      // Refresh real data to show live AI updates
+      await fetchData();
+      setIsReviewModalOpen(false);
+      setNewReview({ name: 'Guest', rating: 5, text: '' });
+    } catch(e) {
+      console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (isLoading) {
     return <div className="min-h-[80vh] flex flex-col items-center justify-center">
@@ -285,9 +313,14 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
 
             {activeTab === 'reviews' && (
               <section>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <Info className="w-6 h-6 text-primary" /> AI Analyzed Reviews
-                </h2>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Info className="w-6 h-6 text-primary" /> AI Analyzed Reviews
+                  </h2>
+                  <button onClick={() => setIsReviewModalOpen(true)} className="bg-primary text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:bg-primary/90 transition-colors">
+                    + Write a Review
+                  </button>
+                </div>
                 
                 {/* AI Sentiment Summary Box */}
                 {restaurant.aiSummary && (
@@ -507,7 +540,70 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
         </div>
 
       </div>
-    </div>
+      </div>
+
+      {isReviewModalOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-background w-full max-w-md rounded-2xl p-6 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">Write a Review</h3>
+              <button onClick={() => setIsReviewModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Rating</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setNewReview({...newReview, rating: star})}
+                      className={`p-2 rounded-lg transition-colors ${newReview.rating >= star ? 'bg-yellow-100 text-yellow-500' : 'bg-muted text-muted-foreground'}`}
+                    >
+                      <Star className="w-6 h-6 fill-current" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Your Name (Optional)</label>
+                <input
+                  type="text"
+                  value={newReview.name}
+                  onChange={(e) => setNewReview({...newReview, name: e.target.value})}
+                  className="w-full border border-input rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  placeholder="Guest"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Your Review</label>
+                <textarea
+                  value={newReview.text}
+                  onChange={(e) => setNewReview({...newReview, text: e.target.value})}
+                  className="w-full border border-input rounded-xl p-3 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  placeholder="How was the food and service?"
+                ></textarea>
+              </div>
+
+              <button
+                disabled={isSubmitting || !newReview.text}
+                onClick={handleAddReview}
+                className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Review'}
+              </button>
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                Your review will be instantly analyzed by AI and will update the restaurant's live metrics.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
