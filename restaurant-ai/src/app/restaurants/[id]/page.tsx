@@ -11,6 +11,8 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
   const [restaurant, setRestaurant] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [reviewFilter, setReviewFilter] = useState('All');
+  const [reviewSearch, setReviewSearch] = useState('');
   const { user, favourites, toggleFavourite } = useAuth();
   
   const isFav = favourites.includes(id);
@@ -63,7 +65,9 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
               <div className="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2 font-bold shadow-lg shadow-primary/20">
                 <span className="text-lg">{restaurant.rating}</span>
                 <Star className="w-5 h-5 fill-current" />
-                <span className="text-xs font-normal opacity-90 ml-1 border-l border-white/30 pl-2">5600 votes</span>
+                <span className="text-xs font-normal opacity-90 ml-1 border-l border-white/30 pl-2">
+                  {restaurant.totalReviews ? restaurant.totalReviews.toLocaleString() : '5,600'} total ratings • AI analyzed {restaurant.reviews?.length || 100} recent reviews
+                </span>
               </div>
               
               <div 
@@ -196,12 +200,17 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 {restaurant.dishInsights.map((dish: any, i: number) => (
                   <div key={i} className="flex justify-between items-center p-3 border border-border/50 rounded-lg">
                     <span className="font-medium">{dish.name}</span>
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${
-                      dish.score >= 70 ? 'bg-green-100 text-green-700' :
-                      dish.score <= 40 ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {dish.score}% Positive
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${
+                        dish.score >= 70 ? 'bg-green-100 text-green-700' :
+                        dish.score <= 40 ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {dish.score}% Positive
+                      </span>
+                      {dish.mentions && (
+                        <span className="text-xs text-muted-foreground font-medium">· {dish.mentions} mentions</span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

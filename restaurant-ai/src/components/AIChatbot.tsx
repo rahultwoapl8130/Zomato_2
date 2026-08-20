@@ -82,14 +82,14 @@ export function AIChatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-24 right-4 z-50 sm:bottom-8 sm:right-8">
       {isOpen ? (
-        <div className="bg-card border border-border shadow-2xl rounded-2xl w-[350px] sm:w-[400px] h-[500px] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
+        <div className="bg-card border border-border shadow-2xl rounded-2xl w-[320px] sm:w-[400px] h-[450px] sm:h-[500px] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
           {/* Header */}
-          <div className="bg-primary p-4 text-primary-foreground flex justify-between items-center shadow-md z-10">
+          <div className="bg-primary p-3 sm:p-4 text-primary-foreground flex justify-between items-center shadow-md z-10">
             <div className="flex items-center gap-2">
               <Bot className="w-5 h-5" />
-              <h3 className="font-bold">Restaurant AI</h3>
+              <h3 className="font-bold text-sm sm:text-base">Restaurant AI</h3>
             </div>
             <button onClick={() => setIsOpen(false)} className="hover:bg-primary/80 p-1 rounded transition-colors">
               <X className="w-5 h-5" />
@@ -97,10 +97,10 @@ export function AIChatbot() {
           </div>
 
           {/* Chat History */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 bg-muted/30">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm whitespace-pre-wrap ${
+                <div className={`max-w-[85%] rounded-2xl px-3 sm:px-4 py-2 text-sm shadow-sm whitespace-pre-wrap ${
                   msg.role === 'user' 
                     ? 'bg-primary text-primary-foreground rounded-tr-sm' 
                     : 'bg-card border border-border text-card-foreground rounded-tl-sm'
@@ -144,9 +144,9 @@ export function AIChatbot() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center animate-in zoom-in"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center animate-in zoom-in"
         >
-          <MessageSquare className="w-6 h-6" />
+          <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       )}
     </div>
