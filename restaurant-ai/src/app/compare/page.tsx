@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RestaurantAPI } from "@/lib/api/restaurants";
-import { Loader2, GitCompare, Star, Check, X } from "lucide-react";
+import { Loader2, GitCompare, Star } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import Link from 'next/link';
 
