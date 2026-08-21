@@ -21,6 +21,11 @@ export const RestaurantAPI = {
 
   getAnalyticsSentiment: () => fetchAPI('/api/analytics/sentiment'),
   getAnalyticsEvaluation: () => fetchAPI('/api/analytics/evaluation'),
+  
+  getMarketPositioning: () => fetchAPI('/api/analytics/positioning'),
+
+  searchRecommendations: (query: string) => fetchAPI(`/api/recommendations/search?query=${encodeURIComponent(query)}`),
+
   getAnalyticsCuisines: () => fetchAPI('/api/analytics/cuisines'),
 
   getAnalyticsKeywords: () => fetchAPI('/api/analytics/keywords'),

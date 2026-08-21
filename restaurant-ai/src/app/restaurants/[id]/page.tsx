@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { use } from "react";
-import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink, Brain } from "lucide-react";
+import { Star, MapPin, Check, X, Clock, Navigation, Phone, Info, Loader2, Heart, Menu as MenuIcon, ExternalLink, Brain, Share2, ArrowLeft, ShieldAlert, AlertTriangle, Lightbulb, ChefHat, Plus, ThumbsUp, ThumbsDown, Filter, Search, Users, TrendingUp, FileDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { RestaurantAPI } from "@/lib/api/restaurants";
 
@@ -108,14 +108,26 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
             </div>
           </div>
           
-          <button 
-            onClick={() => toggleFavourite(id)}
-            className={`absolute top-6 right-6 z-10 p-3.5 rounded-full backdrop-blur-md transition-all ${
-              isFav ? 'bg-primary text-white shadow-lg' : 'bg-black/40 text-white border border-white/20 hover:bg-black/60 shadow-md hover:text-primary'
-            }`}
-          >
-            <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
-          </button>
+          <div className="absolute top-6 right-6 z-10 flex gap-3">
+            <button 
+              onClick={() => {
+                window.print();
+              }}
+              className="px-4 py-2 bg-black/40 text-white border border-white/20 rounded-full backdrop-blur-md hover:bg-black/60 shadow-md transition-all flex items-center gap-2 text-sm font-medium"
+              title="Download Executive PDF Report"
+            >
+              <FileDown className="w-4 h-4" />
+              <span className="hidden sm:inline">Export PDF</span>
+            </button>
+            <button 
+              onClick={() => toggleFavourite(id)}
+              className={`p-2.5 rounded-full backdrop-blur-md transition-all flex items-center justify-center ${
+                isFav ? 'bg-primary text-white shadow-lg' : 'bg-black/40 text-white border border-white/20 hover:bg-black/60 shadow-md hover:text-primary'
+              }`}
+            >
+              <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -432,14 +444,40 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 </div>
 
-                {/* Sentiment Trend Chart */}
-                {restaurant.sentimentTrend && Object.keys(restaurant.sentimentTrend).length > 0 && (
+                {/* Customer Segmentation */}
+                {restaurant.segmentation && restaurant.segmentation.length > 0 && (
                   <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-sm mb-8">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-primary" /> Review Sentiment Trend (By Year)
+                      <Users className="w-5 h-5 text-primary" /> Customer Vibe (Demographics)
                     </h3>
-                    <div className="flex gap-4 items-end h-32 pt-4">
-                      {Object.entries(restaurant.sentimentTrend)
+                    <div className="flex flex-col sm:flex-row gap-4 items-center">
+                      <div className="flex-1 w-full space-y-3">
+                        {restaurant.segmentation.map((seg: any) => (
+                          <div key={seg.name} className="flex items-center gap-3">
+                            <span className="w-24 text-sm font-medium">{seg.name}</span>
+                            <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+                              <div className="bg-primary h-full" style={{ width: `${seg.value}%` }}></div>
+                            </div>
+                            <span className="w-12 text-sm font-bold text-right">{seg.value}%</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="w-full sm:w-1/3 bg-primary/5 p-4 rounded-xl text-center border border-primary/20">
+                        <p className="text-xs text-muted-foreground font-medium mb-1">Top Audience</p>
+                        <h4 className="text-xl font-bold text-primary">{restaurant.segmentation[0]?.name}</h4>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sentiment Trend Chart & Forecast */}
+                {restaurant.trends && Object.keys(restaurant.trends).length > 0 && (
+                  <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-sm mb-8">
+                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-primary" /> Review Sentiment Trend & Forecast
+                    </h3>
+                    <div className="flex gap-4 items-end h-40 pt-4 relative">
+                      {Object.entries(restaurant.trends)
                         .sort(([a], [b]) => a.localeCompare(b))
                         .map(([year, data]: [string, any]) => {
                         const total = data.pos + data.neu + data.neg;
@@ -447,8 +485,8 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                         const posHeight = Math.round((data.pos / total) * 100);
                         const negHeight = Math.round((data.neg / total) * 100);
                         return (
-                          <div key={year} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer relative">
-                            <div className="absolute -top-12 bg-popover text-popover-foreground text-xs p-2 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none whitespace-nowrap">
+                          <div key={year} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer relative z-10">
+                            <div className="absolute -top-12 bg-popover text-popover-foreground text-xs p-2 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                               {posHeight}% Positive<br/>{negHeight}% Negative
                             </div>
                             
@@ -460,6 +498,22 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                           </div>
                         );
                       })}
+                      {restaurant.forecast && (
+                        <div className="flex-1 flex flex-col items-center gap-2 group cursor-pointer relative z-10 border-l border-dashed border-border pl-4 ml-2">
+                          <div className="absolute -top-12 bg-primary text-primary-foreground text-xs p-2 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
+                            AI Forecast: {restaurant.forecast.pos}% Positive
+                          </div>
+                          
+                          <div className="w-full max-w-[40px] flex-1 bg-muted/50 border border-dashed border-primary/50 rounded-t-sm flex flex-col justify-end overflow-hidden opacity-80">
+                            <div className="w-full bg-green-500 transition-all" style={{ height: `${restaurant.forecast.pos}%` }}></div>
+                            <div className="w-full bg-red-500 transition-all" style={{ height: `${restaurant.forecast.neg}%` }}></div>
+                          </div>
+                          <span className="text-[10px] font-bold text-primary text-center leading-none">2026<br/>Est.</span>
+                        </div>
+                      )}
+                      
+                      {/* Dotted line to forecast */}
+                      {restaurant.forecast && <div className="absolute top-1/2 left-0 w-full h-px border-t-2 border-dashed border-primary/30 z-0"></div>}
                     </div>
                   </div>
                 )}

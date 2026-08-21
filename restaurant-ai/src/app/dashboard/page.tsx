@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LineChart, Line, ScatterChart, Scatter, ZAxis, ReferenceLine } from 'recharts';
 import { Activity, TrendingUp, Users, DollarSign, Star, TrendingDown, Minus, Loader2, Target, Crosshair, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { RestaurantAPI } from '@/lib/api/restaurants';
@@ -20,7 +20,8 @@ export default function DashboardPage() {
           cuisines,
           keywords,
           feed,
-          evaluation
+          evaluation,
+          positioning
         ] = await Promise.all([
           RestaurantAPI.getModelInfo(),
           RestaurantAPI.getAnalyticsOverview(),
@@ -28,7 +29,8 @@ export default function DashboardPage() {
           RestaurantAPI.getAnalyticsCuisines(),
           RestaurantAPI.getAnalyticsKeywords(),
           RestaurantAPI.getDashboardFeed(),
-          RestaurantAPI.getAnalyticsEvaluation()
+          RestaurantAPI.getAnalyticsEvaluation(),
+          RestaurantAPI.getMarketPositioning()
         ]);
 
         setData({
@@ -38,7 +40,8 @@ export default function DashboardPage() {
           cuisines,
           keywords,
           feed,
-          evaluation
+          evaluation,
+          positioning
         });
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
@@ -139,6 +142,60 @@ export default function DashboardPage() {
           <p className="text-xs text-muted-foreground">Across all listed restaurants</p>
         </div>
       </div>
+
+      {/* Market Positioning Matrix */}
+      {positioning && positioning.data && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold tracking-tight mb-4 flex items-center gap-2">
+            <Target className="w-6 h-6 text-primary" /> Market Positioning Matrix
+          </h2>
+          <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm overflow-hidden flex flex-col h-[500px]">
+            <div className="mb-2">
+              <p className="text-sm text-muted-foreground">Competitor benchmarking: Price vs AI Sentiment (Top 200 Restaurants).</p>
+            </div>
+            <div className="flex-1 relative w-full h-full">
+              {/* Quadrant Labels */}
+              <div className="absolute top-4 left-10 text-xs font-bold text-red-500/50 uppercase tracking-widest z-10 pointer-events-none">Struggling</div>
+              <div className="absolute top-4 right-10 text-xs font-bold text-yellow-500/50 uppercase tracking-widest z-10 pointer-events-none">Overrated (Premium)</div>
+              <div className="absolute bottom-10 left-10 text-xs font-bold text-green-500/50 uppercase tracking-widest z-10 pointer-events-none">Hidden Gems</div>
+              <div className="absolute bottom-10 right-10 text-xs font-bold text-primary/50 uppercase tracking-widest z-10 pointer-events-none">Premium Leaders</div>
+              
+              <ResponsiveContainer width="100%" height="100%">
+                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.5} />
+                  <XAxis 
+                    type="number" 
+                    dataKey="sentimentScore" 
+                    name="AI Sentiment" 
+                    domain={[0, 100]} 
+                    tick={{fontSize: 12}} 
+                    stroke="#888" 
+                    label={{ value: "AI Sentiment Score (%) →", position: 'bottom', fill: '#888', fontSize: 12 }} 
+                  />
+                  <YAxis 
+                    type="number" 
+                    dataKey="price" 
+                    name="Cost for Two" 
+                    domain={[0, 'dataMax + 500']} 
+                    tick={{fontSize: 12}} 
+                    stroke="#888" 
+                    label={{ value: "Cost for Two (₹) →", angle: -90, position: 'left', fill: '#888', fontSize: 12 }} 
+                  />
+                  <ZAxis type="category" dataKey="name" name="Restaurant" />
+                  <Tooltip 
+                    cursor={{ strokeDasharray: '3 3' }} 
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }}
+                  />
+                  {/* Quadrant division lines */}
+                  <ReferenceLine x={50} stroke="#666" strokeDasharray="3 3" />
+                  <ReferenceLine y={1000} stroke="#666" strokeDasharray="3 3" />
+                  <Scatter name="Restaurants" data={positioning.data} fill="#f43f5e" fillOpacity={0.6} />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Model Evaluation Metrics Section */}
       {evaluation && (

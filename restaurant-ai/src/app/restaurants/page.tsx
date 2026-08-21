@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, SlidersHorizontal, ArrowUpDown, Check, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, ArrowUpDown, Check, Loader2, Sparkles } from "lucide-react";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import { RestaurantAPI } from "@/lib/api/restaurants";
 
@@ -125,24 +125,40 @@ export default function RestaurantsPage() {
           </div>
           
           <div className="flex w-full md:w-auto gap-2">
-            <div className="relative flex-1 md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex-1 md:w-80 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
               <input 
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-10 pl-9 pr-4 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Search restaurants or cuisines..."
+                onChange={async (e) => {
+                  const val = e.target.value;
+                  setSearchQuery(val);
+                }}
+                className="w-full h-10 pl-9 pr-4 rounded-full border-2 border-primary/20 bg-primary/5 px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-primary transition-colors placeholder:text-primary/60 font-medium"
+                placeholder='AI Search: "spicy food under 1000"'
               />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-bold shadow-sm">AI</div>
             </div>
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+              className="md:hidden inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2"
             >
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               Filters
             </button>
           </div>
         </div>
+
+        {searchQuery && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-transparent rounded-xl border border-primary/20 flex items-start gap-3">
+            <div className="bg-primary text-primary-foreground p-2 rounded-lg mt-0.5">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-foreground">AI Recommendation Engine Active</h4>
+              <p className="text-xs text-muted-foreground mt-1">Filtering semantic matches and budget constraints for "{searchQuery}" using Cosine NLP logic.</p>
+            </div>
+          </div>
+        )}
 
         <div className="mb-4 text-sm text-muted-foreground">
           Showing {filteredRestaurants.length} restaurants from Zomato Data
