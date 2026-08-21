@@ -17,10 +17,10 @@ export default function AboutPage() {
             <ChefHat className="w-8 h-8 text-primary" /> The Project
           </h2>
           <p className="text-gray-600 leading-relaxed text-lg">
-            RestaurantAI is a high-performance portfolio project designed to demonstrate the power of Machine Learning and AI in the food tech industry. By leveraging a comprehensive <strong>Kaggle Zomato Dataset of 26,000+ reviews</strong>, the platform analyzes true customer sentiment, tracks historical rating trends, and identifies the best dishes dynamically.
+            RestaurantAI is a high-performance portfolio project designed to demonstrate the power of Machine Learning and AI in the food tech industry. By leveraging a comprehensive <strong>Zomato Dataset of 26,000+ reviews</strong>, the platform analyzes true customer sentiment, tracks historical rating trends, and identifies the best dishes dynamically.
           </p>
           <p className="text-gray-600 leading-relaxed text-lg">
-            Developed by <strong>Rahul</strong>, this platform bridges the gap between raw data and actionable dining choices. It features a custom-built <strong>RAG (Retrieval-Augmented Generation) Chatbot</strong> powered by Groq's blazing-fast Llama-3 models, ensuring food lovers can simply "chat" to find their perfect meal.
+            Developed by <strong>Mr. Rahul Kumar</strong>, this platform bridges the gap between raw data and actionable dining choices. It features a custom-built <strong>RAG (Retrieval-Augmented Generation) Chatbot</strong> powered by Groq's blazing-fast Llama-3 models, ensuring food lovers can simply "chat" to find their perfect meal.
           </p>
         </div>
         
@@ -67,7 +67,7 @@ export default function AboutPage() {
           Traditional restaurant platforms force users to scroll through hundreds of conflicting reviews. RestaurantAI solves this by summarizing the exact pros and cons, predicting sentiment trends over the years, and offering a personal AI assistant to instantly answer questions like <em>"Where can I get the best spicy biryani for a family dinner?"</em>
         </p>
         <div className="inline-flex items-center justify-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-200 mt-4 text-gray-800 font-medium">
-          <Heart className="w-5 h-5 text-rose-500 fill-rose-500" /> Developed with passion by Rahul
+          <Heart className="w-5 h-5 text-rose-500 fill-rose-500" /> Developed with passion by Mr. Rahul Kumar
         </div>
       </div>
     </div>
