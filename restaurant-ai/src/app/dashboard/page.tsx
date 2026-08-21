@@ -71,7 +71,7 @@ export default function DashboardPage() {
 
   if (!data) return <div className="p-8 text-center">Failed to load analytics data.</div>;
 
-  const { modelInfo, overview, sentiment, cuisines, keywords, feed, evaluation } = data;
+  const { modelInfo, overview, sentiment, cuisines, keywords, feed, evaluation, positioning } = data;
 
   return (
     <div className="container px-4 md:px-6 py-8 mx-auto max-w-7xl">
