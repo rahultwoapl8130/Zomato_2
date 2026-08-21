@@ -7,7 +7,7 @@ export function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
-    { role: 'ai', text: 'Hi! I am your AI Restaurant Assistant powered by Groq Llama-3. Ask me for recommendations based on real customer reviews!' }
+    { role: 'ai', text: 'Hi! I am your AI Restaurant Assistant. Ask me for recommendations based on real customer reviews!' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -89,7 +89,10 @@ export function AIChatbot() {
           <div className="bg-primary p-3 sm:p-4 text-primary-foreground flex justify-between items-center shadow-md z-10">
             <div className="flex items-center gap-2">
               <Bot className="w-5 h-5" />
-              <h3 className="font-bold text-sm sm:text-base">Restaurant AI</h3>
+              <h3 className="font-bold text-sm sm:text-base flex items-center gap-2">
+                Restaurant AI
+                <span className="w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)] animate-pulse" title="Online"></span>
+              </h3>
             </div>
             <button onClick={() => setIsOpen(false)} className="hover:bg-primary/80 p-1 rounded transition-colors">
               <X className="w-5 h-5" />
@@ -147,7 +150,7 @@ export function AIChatbot() {
           <div className="absolute -inset-2 bg-primary rounded-full animate-ping opacity-30"></div>
           
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => { setIsOpen(true); playNotificationSound(); }}
             className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center animate-pulse"
           >
             <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
