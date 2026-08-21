@@ -34,10 +34,44 @@ export default function RestaurantsPage() {
   // Filter and sort logic
   const filteredRestaurants = allRestaurants
     .filter(r => {
-      // Search filter
-      if (searchQuery && !r.name.toLowerCase().includes(searchQuery.toLowerCase()) && !r.cuisines.join(" ").toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
+      // AI Semantic Search Filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        let match = false;
+        
+        // Exact name or cuisine match (Basic)
+        if (r.name.toLowerCase().includes(query) || r.cuisines.join(" ").toLowerCase().includes(query)) {
+          match = true;
+        } 
+        else {
+          // NLP simulated match
+          let score = 0;
+          const words = query.split(/\s+/);
+          
+          // Check for price constraint (e.g., "under 1000", "below 500")
+          const numberMatch = query.match(/\d+/);
+          if (numberMatch && (query.includes("under") || query.includes("below") || query.includes("cheap"))) {
+            const budget = parseInt(numberMatch[0]);
+            if (r.costForTwo <= budget) {
+              score += 5;
+            } else {
+              score -= 10; // Penalty if it exceeds budget
+            }
+          }
+          
+          // Keyword match
+          for (const word of words) {
+            if (word.length > 3 && (r.name.toLowerCase().includes(word) || r.cuisines.join(" ").toLowerCase().includes(word))) {
+              score += 3;
+            }
+          }
+          
+          if (score > 0) match = true;
+        }
+        
+        if (!match) return false;
       }
+      
       // Cuisine filter
       if (selectedCuisine !== "All" && !r.cuisines.includes(selectedCuisine)) {
         return false;
