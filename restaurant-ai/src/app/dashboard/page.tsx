@@ -184,7 +184,8 @@ export default function DashboardPage() {
                   <ZAxis type="category" dataKey="name" name="Restaurant" />
                   <Tooltip 
                     cursor={{ strokeDasharray: '3 3' }} 
-                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }}
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
                   />
                   {/* Quadrant division lines */}
                   <ReferenceLine x={50} stroke="#666" strokeDasharray="3 3" />
