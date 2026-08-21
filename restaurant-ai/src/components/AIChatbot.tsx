@@ -148,7 +148,7 @@ export function AIChatbot() {
           
           <button
             onClick={() => setIsOpen(true)}
-            className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center animate-bounce duration-1000"
+            className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center animate-pulse"
           >
             <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
