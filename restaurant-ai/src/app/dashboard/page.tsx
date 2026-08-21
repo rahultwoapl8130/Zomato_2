@@ -190,7 +190,8 @@ export default function DashboardPage() {
                   {/* Quadrant division lines */}
                   <ReferenceLine x={50} stroke="#666" strokeDasharray="3 3" />
                   <ReferenceLine y={1000} stroke="#666" strokeDasharray="3 3" />
-                  <Scatter name="Restaurants" data={positioning.data} fill="#f43f5e" fillOpacity={0.6} />
+                  <Scatter name="Restaurants" data={positioning.data.filter((d: any) => !d.isNew)} fill="#f43f5e" fillOpacity={0.6} />
+                  <Scatter name="Updated Restaurants" data={positioning.data.filter((d: any) => d.isNew)} fill="#10b981" fillOpacity={1} />
                 </ScatterChart>
               </ResponsiveContainer>
             </div>
