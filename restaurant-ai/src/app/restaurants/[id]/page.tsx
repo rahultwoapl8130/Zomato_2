@@ -544,14 +544,14 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 
                 <div className="mb-4 text-sm text-muted-foreground">
-                  Showing {restaurant.reviews?.filter((r: any) => (reviewFilter === 'All' || r.sentiment === reviewFilter) && r.text.toLowerCase().includes(reviewSearch.toLowerCase())).length || 0} real reviews from Zomato dataset.
+                  Showing {restaurant.reviews?.filter((r: any) => (reviewFilter === 'All' || r.sentiment === reviewFilter) && (r.text.toLowerCase().includes(reviewSearch.toLowerCase()) || r.customerName.toLowerCase().includes(reviewSearch.toLowerCase()))).length || 0} real reviews from Zomato dataset.
                 </div>
                 
                 <div className="space-y-4">
                   {restaurant.reviews && restaurant.reviews.length > 0 ? (
                     restaurant.reviews
                       .filter((r: any) => reviewFilter === 'All' || r.sentiment === reviewFilter)
-                      .filter((r: any) => r.text.toLowerCase().includes(reviewSearch.toLowerCase()))
+                      .filter((r: any) => r.text.toLowerCase().includes(reviewSearch.toLowerCase()) || r.customerName.toLowerCase().includes(reviewSearch.toLowerCase()))
                       .map((review: any) => (
                       <div key={review.id} className="bg-card border border-border/50 rounded-xl p-5 shadow-sm hover:border-primary/30 transition-colors">
                         <div className="flex justify-between items-start mb-3">
