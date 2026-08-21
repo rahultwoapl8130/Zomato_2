@@ -15,6 +15,7 @@ export function Navbar() {
     { name: "Reviews & Predictor", href: "/predict" },
     { name: "Compare", href: "/compare" },
     { name: "AI Dashboard", href: "/dashboard" },
+    { name: "B2B Upload", href: "/b2b" },
     { name: "About", href: "/about" },
   ];
 
@@ -56,15 +57,12 @@ export function Navbar() {
                 </button>
               </div>
             ) : (
-              <button 
-                onClick={() => {
-                  const name = prompt("Enter your name to login:");
-                  if (name && name.trim()) login(name.trim());
-                }}
+              <Link 
+                href="/login"
                 className="text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-sm hover:bg-primary/90 transition-colors"
               >
                 Login
-              </button>
+              </Link>
             )}
           </div>
           
@@ -108,15 +106,13 @@ export function Navbar() {
                   <button onClick={logout} className="text-sm text-destructive font-medium">Logout</button>
                 </div>
               ) : (
-                <button 
-                  onClick={() => {
-                    const name = prompt("Enter your name to login:");
-                    if (name && name.trim()) login(name.trim());
-                  }}
-                  className="w-full text-left rounded-md px-3 py-2 text-base font-medium text-primary hover:bg-muted"
+                <Link 
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-primary hover:bg-muted"
                 >
                   Login
-                </button>
+                </Link>
               )}
             </div>
           </div>

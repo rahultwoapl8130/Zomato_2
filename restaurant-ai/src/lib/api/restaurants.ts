@@ -32,6 +32,24 @@ export const RestaurantAPI = {
 
   getDashboardFeed: () => fetchAPI('/api/analytics/dashboard-feed'),
   
+  chatWithAI: (query: string, history: any[] = []) => 
+    fetchAPI<any>('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ query, history })
+    }),
+
+  uploadB2BData: (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    }).then(res => res.json());
+  },
+
+  compareAnalytics: (id1: string, id2: string) => 
+    fetchAPI<any>(`/api/analytics/compare?id1=${id1}&id2=${id2}`),
+
   predictRating: (reviewText: string, restaurantName?: string) => 
     fetchAPI<any>('/api/predict', {
       method: 'POST',

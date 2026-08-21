@@ -15,6 +15,7 @@ export default function ComparePage() {
   
   const [dataA, setDataA] = useState<any>(null);
   const [dataB, setDataB] = useState<any>(null);
+  const [verdictData, setVerdictData] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
@@ -36,12 +37,14 @@ export default function ComparePage() {
       if (!idA || !idB) return;
       setLoadingData(true);
       try {
-        const [a, b] = await Promise.all([
+        const [a, b, comparison] = await Promise.all([
           RestaurantAPI.getRestaurantById(idA),
-          RestaurantAPI.getRestaurantById(idB)
+          RestaurantAPI.getRestaurantById(idB),
+          RestaurantAPI.compareAnalytics(idA, idB).catch(() => null)
         ]);
         setDataA(a);
         setDataB(b);
+        setVerdictData(comparison);
       } catch(e) {
         console.error(e);
       } finally {
@@ -194,10 +197,19 @@ export default function ComparePage() {
                 <Star className="w-4 h-4 fill-current"/> AI Verdict
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Based on AI sentiment analysis of {dataA.totalReviews + dataB.totalReviews} reviews, 
-                <strong className="text-foreground"> {dataA.sentimentScore >= dataB.sentimentScore ? dataA.name : dataB.name} </strong> 
-                is recommended due to a higher overall positive sentiment score 
-                ({Math.max(dataA.sentimentScore, dataB.sentimentScore)}% vs {Math.min(dataA.sentimentScore, dataB.sentimentScore)}%).
+                {verdictData ? (
+                  <>
+                    <strong className="text-foreground">Winner: {verdictData.winner} </strong><br/>
+                    {verdictData.verdict}
+                  </>
+                ) : (
+                  <>
+                    Based on AI sentiment analysis of {dataA.totalReviews + dataB.totalReviews} reviews, 
+                    <strong className="text-foreground"> {dataA.sentimentScore >= dataB.sentimentScore ? dataA.name : dataB.name} </strong> 
+                    is recommended due to a higher overall positive sentiment score 
+                    ({Math.max(dataA.sentimentScore, dataB.sentimentScore)}% vs {Math.min(dataA.sentimentScore, dataB.sentimentScore)}%).
+                  </>
+                )}
               </p>
             </div>
           </div>

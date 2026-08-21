@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { AIChatbot } from "@/components/AIChatbot";
+import { AIChatWidget } from "@/components/AIChatWidget";
 import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,6 +26,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             <AIChatbot />
+            <AIChatWidget />
           </div>
         </AuthProvider>
       </body>
