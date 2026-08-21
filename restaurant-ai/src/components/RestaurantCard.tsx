@@ -87,7 +87,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             e.stopPropagation();
             window.open(restaurant.link, '_blank');
           }}
-          className="absolute bottom-[110px] left-3 z-10 p-2 bg-background/80 text-muted-foreground hover:bg-background hover:text-primary rounded-full backdrop-blur-sm transition-all shadow-sm"
+          className="absolute top-3 right-[4.5rem] z-10 p-1.5 bg-background/90 text-muted-foreground hover:bg-background hover:text-primary rounded-lg backdrop-blur-sm transition-all shadow-sm"
           title="View on Zomato"
         >
           <ExternalLink className="w-4 h-4" />
