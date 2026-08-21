@@ -17,7 +17,8 @@ export function AIChatWidget() {
     setLoading(true);
     try {
       const res = await RestaurantAPI.chatWithAI(query, history);
-      setHistory([...newHistory, { role: 'ai', content: res.reply || 'AI Response' }]);
+      const replyContent = res.reply || res.message || (res.detail ? JSON.stringify(res.detail) : 'AI Response');
+      setHistory([...newHistory, { role: 'ai', content: replyContent }]);
     } catch (e) {
       setHistory([...newHistory, { role: 'ai', content: 'Error occurred connecting to AI.' }]);
     } finally {

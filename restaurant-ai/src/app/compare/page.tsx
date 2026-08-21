@@ -134,7 +134,7 @@ export default function ComparePage() {
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 <Radar name={dataA.name} dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.5} />
                 <Radar name={dataB.name} dataKey="B" stroke="#f43f5e" fill="#f43f5e" fillOpacity={0.5} />
-                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#fff' }} labelStyle={{ color: '#fff' }} />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} />
               </RadarChart>
             </ResponsiveContainer>
