@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageSquare, X, Send, Loader2, Bot } from "lucide-react";
+import { MessageSquare, X, Send, Loader2, Bot, Mic, Settings } from "lucide-react";
 
 export function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +10,10 @@ export function AIChatbot() {
     { role: 'ai', text: 'Hi! I am your AI Restaurant Assistant. Ask me for recommendations based on real customer reviews!' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [preference, setPreference] = useState("All");
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Notification sound using Web Audio API (no external file needed)
@@ -45,40 +49,72 @@ export function AIChatbot() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  const startVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support Voice Search.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN'; // Hinglish friendly
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setQuery(transcript);
+      setTimeout(() => submitQuery(transcript), 500);
+    };
+    
+    recognition.start();
+  };
 
-    const userMessage = query;
+  const submitQuery = async (textToSubmit: string) => {
+    if (!textToSubmit.trim()) return;
+    
+    const userMessage = textToSubmit;
     setQuery("");
+    
+    // Format history for backend
+    const apiHistory = messages.map(m => ({ role: m.role, content: m.text }));
+    
     setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
     setIsLoading(true);
 
     try {
-      // Use the actual backend API deployed on Render or local depending on env
       const baseUrl = 'https://zomato-3-hi4f.onrender.com';
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: userMessage })
+        body: JSON.stringify({ 
+          query: userMessage,
+          history: apiHistory,
+          preference: preference
+        })
       });
 
       const textText = await response.text();
       try {
         const data = JSON.parse(textText);
-        setMessages(prev => [...prev, { role: 'ai', text: data.response || "No response field in JSON" }]);
+        setMessages(prev => [...prev, { role: 'ai', text: data.reply || data.response || "No response received" }]);
         playNotificationSound();
       } catch (parseError) {
-        setMessages(prev => [...prev, { role: 'ai', text: `Error parsing JSON. Status: ${response.status}. URL: ${baseUrl}/api/chat. Response text: ${textText.substring(0, 50)}...` }]);
+        setMessages(prev => [...prev, { role: 'ai', text: `Error parsing JSON. Status: ${response.status}.` }]);
       }
     } catch (error: any) {
-      const baseUrl = 'https://zomato-3-hi4f.onrender.com';
-      setMessages(prev => [...prev, { role: 'ai', text: `Connection Error! URL: ${baseUrl}/api/chat. Error details: ${error.message}` }]);
+      setMessages(prev => [...prev, { role: 'ai', text: `Connection Error! Error details: ${error.message}` }]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitQuery(query);
   };
 
   return (
@@ -94,10 +130,31 @@ export function AIChatbot() {
                 <span className="w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)] animate-pulse" title="Online"></span>
               </h3>
             </div>
-            <button onClick={() => setIsOpen(false)} className="hover:bg-primary/80 p-1 rounded transition-colors">
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => setShowSettings(!showSettings)} className="hover:bg-primary/80 p-1 rounded transition-colors">
+                <Settings className="w-5 h-5" />
+              </button>
+              <button onClick={() => setIsOpen(false)} className="hover:bg-primary/80 p-1 rounded transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
+          
+          {/* Settings Bar */}
+          {showSettings && (
+            <div className="bg-muted p-2 flex items-center justify-between border-b border-border text-sm">
+              <span className="font-semibold text-foreground">Diet Preference:</span>
+              <select 
+                className="bg-background text-foreground border rounded px-2 py-1 text-xs"
+                value={preference}
+                onChange={(e) => setPreference(e.target.value)}
+              >
+                <option value="All">Everything</option>
+                <option value="Veg">Strictly Veg 🥬</option>
+                <option value="Non-Veg">Non-Veg 🍗</option>
+              </select>
+            </div>
+          )}
 
           {/* Chat History */}
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 bg-muted/30">
@@ -125,19 +182,26 @@ export function AIChatbot() {
 
           {/* Input Area */}
           <div className="p-3 bg-card border-t border-border">
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+              <button 
+                type="button"
+                onClick={startVoiceInput}
+                className={`p-2 rounded-xl transition-colors shadow-sm flex-shrink-0 ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-muted hover:bg-muted/80 text-foreground'}`}
+              >
+                <Mic className="w-5 h-5" />
+              </button>
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask for the best veg burger..."
-                className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 transition-shadow shadow-sm text-foreground"
+                placeholder={isListening ? "Listening..." : "Ask for the best veg burger..."}
+                className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary text-foreground"
                 disabled={isLoading}
               />
               <button 
                 type="submit" 
                 disabled={isLoading || !query.trim()}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 rounded-xl disabled:opacity-50 transition-colors shadow-sm"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 rounded-xl disabled:opacity-50 transition-colors shadow-sm flex-shrink-0"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -146,9 +210,7 @@ export function AIChatbot() {
         </div>
       ) : (
         <div className="relative group">
-          {/* Animated ping ring behind the button */}
           <div className="absolute -inset-2 bg-primary rounded-full animate-ping opacity-30"></div>
-          
           <button
             onClick={() => { setIsOpen(true); playNotificationSound(); }}
             className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-3 sm:p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center animate-pulse"
