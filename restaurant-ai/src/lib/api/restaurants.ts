@@ -32,10 +32,10 @@ export const RestaurantAPI = {
 
   getDashboardFeed: () => fetchAPI('/api/analytics/dashboard-feed'),
   
-  chatWithAI: (query: string, history: any[] = []) => 
+  chatWithAI: (query: string, history: any[] = [], preference: string = "All") => 
     fetchAPI<any>('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ query, history })
+      body: JSON.stringify({ query, history, preference })
     }),
 
   uploadB2BData: (file: File) => {
